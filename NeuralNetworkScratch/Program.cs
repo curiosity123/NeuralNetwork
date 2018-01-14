@@ -44,45 +44,10 @@ namespace NeuralNetworkScratch
             NEngine nn = new NEngine(layers);
             nn.Initialize();
             Helper.Print(nn.ForwardPropagation());
-            Helper.Print(nn.ForwardPropagation());
-            Helper.Print(nn.ForwardPropagation());
 
 
 
-
-
-
-            double[,] W1 = new double[3, 3] {
-            {0.01,  0.05,  0.07},
-            {0.20,  0.041, 0.11},
-            {0.04,  0.56, 0.13}};
-
-
-            double[,] Z1 = Matrix.Mul(X, W1);
-            double[,] A1 = Matrix.Func(Z1, (x) => Math.Tanh(x));
-
-
-            double[,] W2 = new double[3, 2] {
-            {0.04,  0.78},
-            {0.40,  0.45},
-            {0.65,  0.23}};
-
-
-            double[,] Z2 = Matrix.Mul(A1, W2);
-            double[,] A2 = Matrix.Func(Z2, (x) => Math.Tanh(x));
-
-
-            double[,] W3 = new double[2, 1] {
-            {0.04},
-            {0.41}};
-
-            double[,] Z3 = Matrix.Mul(A2, W3);
-            double[,] A3 = Matrix.Func(Z3, (x) => Math.Tanh(x));
-
-
-
-            Helper.Print(Matrix.Func(Matrix.Mul(Matrix.AddFeatureBias(X, 1), Matrix.AddWeightBias(W1, 0.1)), (x) => Math.Tanh(x)));
-
+            
         }
 
 
