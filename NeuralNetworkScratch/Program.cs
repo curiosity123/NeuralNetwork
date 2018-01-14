@@ -42,7 +42,7 @@ namespace NeuralNetworkScratch
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
 
-            NEngine nn = new NEngine(layers,Y);
+            NEngine nn = new NEngine(layers, Y);
             nn.Initialize();
             nn.ForwardPropagation();
 
@@ -166,7 +166,7 @@ namespace NeuralNetworkScratch
         public double[,] ForwardPropagation()
         {
 
-            for (int i = 0; i < layers.Length-1; i++)
+            for (int i = 0; i < layers.Length - 1; i++)
             {
                 if (i == 0)
                 {
@@ -192,7 +192,7 @@ namespace NeuralNetworkScratch
 
         public double[,] CostFunction()
         {
-            return Matrix.Func(Y, A[2], (x, y) =>  x - y );
+            return Matrix.Func(Y, A[2], (x, y) => x - y);
         }
 
         public double[,] SigmaFunction()
@@ -202,8 +202,10 @@ namespace NeuralNetworkScratch
 
 
         public double[,] GradientFunction()
-        { 
-            return Matrix.Mul(Matrix.AddFeatureBias(A[1], 1), SigmaFunction());
+        {
+            double[,] a = SigmaFunction();
+            double[,] b = Matrix.AddFeatureBias(A[1], 1);
+            return Matrix.Mul(b, a);
         }
 
 
@@ -229,7 +231,7 @@ namespace NeuralNetworkScratch
             double[] resultMatrix = new double[MatrixA.Length];
 
             for (int i = 0; i < MatrixA.Length; i++)
-                    resultMatrix[i] = Function(MatrixA[i], (MatrixB[i]));
+                resultMatrix[i] = Function(MatrixA[i], (MatrixB[i]));
             return resultMatrix;
         }
         public static double[,] Func(double[,] A, Func<double, double> Function, bool Swap = false)
@@ -259,19 +261,19 @@ namespace NeuralNetworkScratch
         }
         public static double[,] Mul(double[,] A, double[,] B)
         {
-            int rA = A.GetLength(0);
-            int cA = A.GetLength(1);
-            int rB = B.GetLength(0);
-            int cB = B.GetLength(1);
+            int rowA = A.GetLength(0);
+            int columnA = A.GetLength(1);
+            int rowB = B.GetLength(0);
+            int columnB = B.GetLength(1);
             double temp = 0;
-            double[,] ResultMatrix = new double[rA, cB];
+            double[,] ResultMatrix = new double[rowA, columnB];
 
-            for (int i = 0; i < rA; i++)
+            for (int i = 0; i < rowA; i++)
             {
-                for (int j = 0; j < cB; j++)
+                for (int j = 0; j < columnB; j++)
                 {
                     temp = 0;
-                    for (int k = 0; k < cA; k++)
+                    for (int k = 0; k < columnA; k++)
                         temp += A[i, k] * B[k, j];
 
                     ResultMatrix[i, j] = temp;
@@ -320,7 +322,7 @@ namespace NeuralNetworkScratch
             return B;
         }
 
-public static double TanhDeriv(double x)
+        public static double TanhDeriv(double x)
         {
             return -(1 - Math.Pow(Math.Tanh(x), 2));// (x * (1 - x));
         }
@@ -337,8 +339,8 @@ public static double TanhDeriv(double x)
 
     public static class Helper
     {
-        
-       public static double Normalize(double value, double minValue, double maxValue)
+
+        public static double Normalize(double value, double minValue, double maxValue)
         {
             return (value - minValue) / (maxValue - minValue);
         }
