@@ -201,7 +201,7 @@ namespace NeuralNetworkScratch
 
         public double[,] GradientFunction()
         {
-            return Matrix.Mul(SigmaFunction(),Matrix.Transpose( Matrix.AddFeatureBias(A[1], 1)));
+            return Matrix.Mul(Matrix.Transpose( Matrix.AddFeatureBias(A[1], 1)),SigmaFunction());
         }
 
         public void UpdateWeight()
