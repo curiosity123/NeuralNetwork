@@ -201,18 +201,21 @@ namespace NeuralNetworkScratch
                     var cost = Matrix.Func(Y, A[2], (x, y) => x - y);
                     Sigma[2] = Matrix.Func(cost, Z[2], (x, y) => -x * Matrix.TanhPrime(y));
                     Gradient[2] = Matrix.Mul(Matrix.Transpose(Matrix.AddFeatureBias(A[1], 1)), Sigma[2]);
-                    Matrix.Print(Gradient[2]);
+                    //Matrix.Print(Gradient[2]);
                 }
                 else if (i == layers.Length - 2) // hidden layer
                 {
-   
-
                     Sigma[1] =Matrix.Func( Matrix.Mul(Sigma[2], Matrix.Transpose(W[2])), Matrix.Func(Matrix.AddFeatureBias(Z[1], 1), (x) => Matrix.TanhPrime(x)), (x,y)=>x*y);
-              
-
                     Gradient[1] =Matrix.RemoveFeatureBias( Matrix.Mul(Matrix.Transpose(Matrix.AddFeatureBias(A[0], 1)), Sigma[1]));
 
-                    Matrix.Print(Gradient[1]);
+                    //Matrix.Print(Gradient[1]);
+                }
+                else if (i == layers.Length - 3) // hidden layer
+                {
+                    Sigma[0] = Matrix.Func(Matrix.Mul(Matrix.RemoveFeatureBias(Sigma[1]), Matrix.Transpose(W[1])), Matrix.Func(Matrix.AddFeatureBias(Z[0], 1), (x) => Matrix.TanhPrime(x)), (x, y) => x * y);
+                    Gradient[0] = Matrix.RemoveFeatureBias(Matrix.Mul(Matrix.Transpose(Matrix.AddFeatureBias(X, 1)), Sigma[0]));
+
+                    Matrix.Print(Gradient[0]);
                 }
             }
 
