@@ -184,11 +184,9 @@ namespace NeuralNetworkScratch
         }
         public void BackwardPropagation()
         {
-            Matrix.Print(CostFunction());
+       
 
         }
-
-
 
         public double[,] CostFunction()
         {
@@ -197,15 +195,18 @@ namespace NeuralNetworkScratch
 
         public double[,] SigmaFunction()
         {
-            return Matrix.Func(CostFunction(), Z[2], (x, y) => x * Matrix.TanhDeriv(y));
+            return Matrix.Func(CostFunction(), Z[2], (x, y) => -x * Matrix.TanhPrime(y));
         }
 
 
         public double[,] GradientFunction()
         {
-            double[,] a = SigmaFunction();
-            double[,] b = Matrix.AddFeatureBias(A[1], 1);
-            return Matrix.Mul(b, a);
+            return Matrix.Mul(SigmaFunction(),Matrix.Transpose( Matrix.AddFeatureBias(A[1], 1)));
+        }
+
+        public void UpdateWeight()
+        {
+
         }
 
 
@@ -213,6 +214,19 @@ namespace NeuralNetworkScratch
 
     public static class Matrix
     {
+
+        public static double[,] Transpose(double [,] M)
+        {
+            double[,] T = new double[M.GetLength(1), M.GetLength(0)];
+
+            for (int i = 0; i < M.GetLength(0); i++)
+                for (int j = 0; j < M.GetLength(1); j++)
+                    T[j, i] = M[i, j];
+
+            return T;
+        }
+
+
         public static double[,] Func(double[,] MatrixA, double[,] MatrixB, Func<double, double, double> Function)
         {
             int rA = MatrixA.GetLength(0);
@@ -322,9 +336,9 @@ namespace NeuralNetworkScratch
             return B;
         }
 
-        public static double TanhDeriv(double x)
+        public static double TanhPrime(double x)
         {
-            return -(1 - Math.Pow(Math.Tanh(x), 2));// (x * (1 - x));
+            return (1 - Math.Pow(Math.Tanh(x), 2));// (x * (1 - x));
         }
         public static void Print(double[,] z)
         {
