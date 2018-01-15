@@ -137,7 +137,7 @@ namespace NeuralNetworkScratch
                     W[i - 1] = new double[layers[i - 1].neurons, layers[i].neurons];
                 }
 
-                //W[i - 1] = Matrix.Rand(W[i - 1], new Random());
+               // W[i - 1] = Matrix.Rand(W[i - 1], new Random());
 
                 if (i == 1)
                     W[i - 1] = new double[3, 3] {
@@ -182,21 +182,22 @@ namespace NeuralNetworkScratch
         }
         public void BackwardPropagation()
         {
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 1000000; i++)
             {
 
                 GradientFunction();
                 UpdateWeight();
                 ForwardPropagation();
 
-                if (i % 100 == 0)
+                if (i % 100000 == 0)
                 {
                     Console.Clear();
                     Matrix.Print(A[2]);
                     Console.Write("\n");
                     Matrix.Print(Y);
+                    Thread.Sleep(100);
                 }
-                Thread.Sleep(1);
+               
                 
             }
         }
@@ -236,7 +237,7 @@ namespace NeuralNetworkScratch
         {
             for(int i=0;i<W.Length;i++)
             {
-                W[i] = Matrix.Func(W[i], Matrix.Func( Gradient[i], (x) => (0.1* x)),(x,y)=> x-y);
+                W[i] = Matrix.Func(W[i], Matrix.Func( Gradient[i], (x) => ((0.0001)* x)),(x,y)=> x-y);
             }
         }
 
@@ -245,7 +246,6 @@ namespace NeuralNetworkScratch
 
     public static class Matrix
     {
-
         public static double[,] Transpose(double[,] M)
         {
             double[,] T = new double[M.GetLength(1), M.GetLength(0)];
@@ -256,8 +256,6 @@ namespace NeuralNetworkScratch
 
             return T;
         }
-
-
         public static double[,] Func(double[,] MatrixA, double[,] MatrixB, Func<double, double, double> Function)
         {
             int rA = MatrixA.GetLength(0);
@@ -271,38 +269,18 @@ namespace NeuralNetworkScratch
                     resultMatrix[i, j] = Function(MatrixA[i, j], (MatrixB[i, j]));
             return resultMatrix;
         }
-        public static double[] Func(double[] MatrixA, double[] MatrixB, Func<double, double, double> Function)
-        {
-            double[] resultMatrix = new double[MatrixA.Length];
-
-            for (int i = 0; i < MatrixA.Length; i++)
-                resultMatrix[i] = Function(MatrixA[i], (MatrixB[i]));
-            return resultMatrix;
-        }
-        public static double[,] Func(double[,] A, Func<double, double> Function, bool Swap = false)
+        public static double[,] Func(double[,] A, Func<double, double> Function)
         {
             int rA = A.GetLength(0);
             int cA = A.GetLength(1);
 
-            double[,] ResultMatrix = new double[cA, rA];
-            double[,] ResultMatrixSwap = new double[rA, cA];
+            double[,] Result = new double[rA, cA];
 
             for (int i = 0; i < rA; i++)
                 for (int j = 0; j < cA; j++)
-                    if (Function == null)
-                    {
-                        ResultMatrix[j, i] = A[i, j];
-                        ResultMatrixSwap[i, j] = A[i, j];
-                    }
-                    else
-                    {
-                        ResultMatrix[j, i] = Function(A[i, j]);
-                        ResultMatrixSwap[i, j] = Function(A[i, j]);
-                    }
-            if (!Swap)
-                return ResultMatrixSwap;
-            else
-                return ResultMatrix;
+                        Result[i, j] = Function(A[i, j]);
+
+                return Result;
         }
         public static double[,] Mul(double[,] A, double[,] B)
         {
@@ -379,7 +357,6 @@ namespace NeuralNetworkScratch
 
             return B;
         }
-
         public static double TanhPrime(double x)
         {
             return (1 - Math.Pow(Math.Tanh(x), 2));// (x * (1 - x));
@@ -397,11 +374,9 @@ namespace NeuralNetworkScratch
 
     public static class Helper
     {
-
         public static double Normalize(double value, double minValue, double maxValue)
         {
             return (value - minValue) / (maxValue - minValue);
         }
-
     }
 }
