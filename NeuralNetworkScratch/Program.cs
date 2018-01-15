@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NeuralNetworkScratch
@@ -181,8 +182,23 @@ namespace NeuralNetworkScratch
         }
         public void BackwardPropagation()
         {
-            GradientFunction();
-            UpdateWeight();
+            for (int i = 0; i < 100000; i++)
+            {
+
+                GradientFunction();
+                UpdateWeight();
+                ForwardPropagation();
+
+                if (i % 100 == 0)
+                {
+                    Console.Clear();
+                    Matrix.Print(A[2]);
+                    Console.Write("\n");
+                    Matrix.Print(Y);
+                }
+                Thread.Sleep(1);
+                
+            }
         }
 
 
@@ -196,7 +212,7 @@ namespace NeuralNetworkScratch
                 {
                     Sigma[0] = Matrix.Func(Matrix.Mul(Matrix.RemoveFeatureBias(Sigma[1]), Matrix.Transpose(W[1])), Matrix.Func(Matrix.AddFeatureBias(Z[0], 1), (x) => Matrix.TanhPrime(x)), (x, y) => x * y);
                     Gradient[0] = Matrix.RemoveFeatureBias(Matrix.Mul(Matrix.Transpose(Matrix.AddFeatureBias(X, 1)), Sigma[0]));
-                    Matrix.Print(Gradient[0]);
+                   
                 }
                 else if (i == layers.Length - 1) // output layer
                 {
@@ -220,7 +236,7 @@ namespace NeuralNetworkScratch
         {
             for(int i=0;i<W.Length;i++)
             {
-                W[i] = Matrix.Func(W[i], Matrix.Func( Gradient[i], (x) => (0.1 * (1 / 5) *x)),(x,y)=> x-y);
+                W[i] = Matrix.Func(W[i], Matrix.Func( Gradient[i], (x) => (0.1* x)),(x,y)=> x-y);
             }
         }
 
