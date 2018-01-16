@@ -137,26 +137,26 @@ namespace NeuralNetworkScratch
                     W[i - 1] = new double[layers[i - 1].neurons, layers[i].neurons];
                 }
 
-               // W[i - 1] = Matrix.Rand(W[i - 1], new Random());
+                W[i - 1] = Matrix.Rand(W[i - 1], new Random());
 
-                if (i == 1)
-                    W[i - 1] = new double[3, 3] {
-                    {0.01,  0.05,  0.07},
-                    {0.20,  0.041, 0.11},
-                    {0.04,  0.56, 0.13}};
-
-
-                if (i == 2)
-                    W[i - 1] = new double[3, 2] {
-                    {0.04,  0.78},
-                    {0.40,  0.45},
-                    {0.65,  0.23}};
+                //if (i == 1)
+                //    W[i - 1] = new double[3, 3] {
+                //    {0.01,  0.05,  0.07},
+                //    {0.20,  0.041, 0.11},
+                //    {0.04,  0.56, 0.13}};
 
 
-                if (i == 3)
-                    W[i - 1] = new double[2, 1] {
-                    {0.04},
-                    {0.41}};
+                //if (i == 2)
+                //    W[i - 1] = new double[3, 2] {
+                //    {0.04,  0.78},
+                //    {0.40,  0.45},
+                //    {0.65,  0.23}};
+
+
+                //if (i == 3)
+                //    W[i - 1] = new double[2, 1] {
+                //    {0.04},
+                //    {0.41}};
 
                 W[i - 1] = Matrix.AddWeightBias(W[i - 1], 0.1);
             }
@@ -182,14 +182,14 @@ namespace NeuralNetworkScratch
         }
         public void BackwardPropagation()
         {
-            for (int i = 0; i < 1000000; i++)
+            for (int i = 0; i < 10000; i++)
             {
 
                 GradientFunction();
                 UpdateWeight();
                 ForwardPropagation();
 
-                if (i % 100000 == 0)
+                if (i % 1000 == 0)
                 {
                     Console.Clear();
                     Matrix.Print(A[2]);
@@ -217,14 +217,14 @@ namespace NeuralNetworkScratch
                 }
                 else if (i == layers.Length - 1) // output layer
                 {
-                    var cost = Matrix.Func(Y, A[2], (x, y) => x - y);
-                    Sigma[2] = Matrix.Func(cost, Z[2], (x, y) => -x * Matrix.TanhPrime(y));
-                    Gradient[2] = Matrix.Mul(Matrix.Transpose(Matrix.AddFeatureBias(A[1], 1)), Sigma[2]);
+                    var cost = Matrix.Func(Y, A[A.Length-1], (x, y) => x - y);
+                    Sigma[Sigma.Length-1] = Matrix.Func(cost, Z[Z.Length-1], (x, y) => -x * Matrix.TanhPrime(y));
+                    Gradient[Gradient.Length-1] = Matrix.Mul(Matrix.Transpose(Matrix.AddFeatureBias(A[A.Length-2], 1)), Sigma[Sigma.Length-1]);
                 }
                 else  // hidden layer
                 {
-                    Sigma[1] = Matrix.Func(Matrix.Mul(Sigma[2], Matrix.Transpose(W[2])), Matrix.Func(Matrix.AddFeatureBias(Z[1], 1), (x) => Matrix.TanhPrime(x)), (x, y) => x * y);
-                    Gradient[1] = Matrix.RemoveFeatureBias(Matrix.Mul(Matrix.Transpose(Matrix.AddFeatureBias(A[0], 1)), Sigma[1]));
+                    Sigma[i-1] = Matrix.Func(Matrix.Mul(Sigma[i], Matrix.Transpose(W[i])), Matrix.Func(Matrix.AddFeatureBias(Z[i-1], 1), (x) => Matrix.TanhPrime(x)), (x, y) => x * y);
+                    Gradient[i-1] = Matrix.RemoveFeatureBias(Matrix.Mul(Matrix.Transpose(Matrix.AddFeatureBias(A[i-2], 1)), Sigma[i-1]));
                 }
             }
 
