@@ -37,17 +37,16 @@ namespace NeuralNetworkScratch
             {
                 new Layer(LayerType.Input,  X, ActivationFunction.Tanh),
                 new Layer(LayerType.Hidden, 3, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 11, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 11, ActivationFunction.Tanh),
                 new Layer(LayerType.Hidden, 2, ActivationFunction.Tanh),
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
 
             NEngine nn = new NEngine(layers, Y);
-            nn.Initialize();
-            nn.ForwardPropagation();
+            Matrix.Print(nn.ForwardPropagation());
+            Console.WriteLine("\n\n");
             nn.BackwardPropagation();
-
+            Matrix.Print(nn.ForwardPropagation());
+            Console.ReadKey();
         }
 
 
@@ -107,11 +106,14 @@ namespace NeuralNetworkScratch
         {
             this.Y = Y;
             this.layers = layers;
+
+            Initialize();
+            ForwardPropagation();
         }
 
 
 
-        public void Initialize()
+        private void Initialize()
         {
             X = layers[0].matrix;
             X = Matrix.AddFeatureBias(X, 1);
@@ -193,11 +195,11 @@ namespace NeuralNetworkScratch
 
                 if (i % 1000 == 0)
                 {
-                    Console.Clear();
-                    Matrix.Print(A[A.Length-1]);
-                    Console.Write("\n");
-                    Matrix.Print(Y);
-                    Thread.Sleep(5);
+                   // Console.Clear();
+                   // Matrix.Print(A[A.Length-1]);
+                   // Console.Write("\n");
+                   // Matrix.Print(Y);
+                   // Thread.Sleep(5);
                 }
                
                 
