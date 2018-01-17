@@ -36,8 +36,9 @@ namespace NeuralNetworkScratch
             Layer[] layers = new Layer[]
             {
                 new Layer(LayerType.Input,  X, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 3, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 2, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 30, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 110, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 20, ActivationFunction.Tanh),
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
 
@@ -124,7 +125,7 @@ namespace NeuralNetworkScratch
                 if (i == 1)
                 {
                     A[i - 1] = new double[X.GetLength(0), layers[i].neurons];
-                    W[i - 1] = new double[X.GetLength(0), layers[i].neurons];
+                    W[i - 1] = new double[X.GetLength(1)-1, layers[i].neurons];
                 }
                 else if (i == layers.Length - 1)
                 {
@@ -182,7 +183,7 @@ namespace NeuralNetworkScratch
         }
         public void BackwardPropagation()
         {
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 100000; i++)
             {
 
                 GradientFunction();
@@ -192,7 +193,7 @@ namespace NeuralNetworkScratch
                 if (i % 1000 == 0)
                 {
                     Console.Clear();
-                    Matrix.Print(A[2]);
+                    Matrix.Print(A[A.Length-1]);
                     Console.Write("\n");
                     Matrix.Print(Y);
                     Thread.Sleep(100);
@@ -211,7 +212,7 @@ namespace NeuralNetworkScratch
             {
                 if (i == 1) // input layer 
                 {
-                    Sigma[0] = Matrix.Func(Matrix.Mul(Matrix.RemoveFeatureBias(Sigma[1]), Matrix.Transpose(W[1])), Matrix.Func(Matrix.AddFeatureBias(Z[0], 1), (x) => Matrix.TanhPrime(x)), (x, y) => x * y);
+                    Sigma[0] = Matrix.Func(Matrix.Mul(Sigma[1], Matrix.Transpose(W[1])), Matrix.Func(Matrix.AddFeatureBias(Z[0], 1), (x) => Matrix.TanhPrime(x)), (x, y) => x * y);
                     Gradient[0] = Matrix.RemoveFeatureBias(Matrix.Mul(Matrix.Transpose(Matrix.AddFeatureBias(X, 1)), Sigma[0]));
                    
                 }
@@ -225,6 +226,7 @@ namespace NeuralNetworkScratch
                 {
                     Sigma[i-1] = Matrix.Func(Matrix.Mul(Sigma[i], Matrix.Transpose(W[i])), Matrix.Func(Matrix.AddFeatureBias(Z[i-1], 1), (x) => Matrix.TanhPrime(x)), (x, y) => x * y);
                     Gradient[i-1] = Matrix.RemoveFeatureBias(Matrix.Mul(Matrix.Transpose(Matrix.AddFeatureBias(A[i-2], 1)), Sigma[i-1]));
+                    Sigma[i - 1] = Matrix.RemoveFeatureBias(Sigma[i - 1]);
                 }
             }
 
