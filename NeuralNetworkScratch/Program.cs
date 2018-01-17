@@ -16,15 +16,15 @@ namespace NeuralNetworkScratch
 
 
 
-
-            double[,] X = new double[5, 3] {
+            //[examples - rows, features -columns
+            double[,] X = new double[,] {
             {1.4,  -1, 0.4 },
             {0.4,  -1, 0.1 },
             {5.4,  -1, 4 },
             {1.5,  -1, 1 },
             {1.8,   1, 1 } };
 
-            double[,] Y = new double[5, 1]{
+            double[,] Y = new double[,]{
             {0.45},
             {0.8},
             {0.2},
@@ -36,9 +36,10 @@ namespace NeuralNetworkScratch
             Layer[] layers = new Layer[]
             {
                 new Layer(LayerType.Input,  X, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 30, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 110, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 20, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 3, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 11, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 11, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 2, ActivationFunction.Tanh),
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
 
@@ -196,7 +197,7 @@ namespace NeuralNetworkScratch
                     Matrix.Print(A[A.Length-1]);
                     Console.Write("\n");
                     Matrix.Print(Y);
-                    Thread.Sleep(100);
+                    Thread.Sleep(5);
                 }
                
                 
@@ -214,7 +215,7 @@ namespace NeuralNetworkScratch
                 {
                     Sigma[0] = Matrix.Func(Matrix.Mul(Sigma[1], Matrix.Transpose(W[1])), Matrix.Func(Matrix.AddFeatureBias(Z[0], 1), (x) => Matrix.TanhPrime(x)), (x, y) => x * y);
                     Gradient[0] = Matrix.RemoveFeatureBias(Matrix.Mul(Matrix.Transpose(Matrix.AddFeatureBias(X, 1)), Sigma[0]));
-                   
+                    
                 }
                 else if (i == layers.Length - 1) // output layer
                 {
@@ -238,9 +239,7 @@ namespace NeuralNetworkScratch
         public void UpdateWeight()
         {
             for(int i=0;i<W.Length;i++)
-            {
-                W[i] = Matrix.Func(W[i], Matrix.Func( Gradient[i], (x) => (0.1*((double)1/5)* x)),(x,y)=> x-y);
-            }
+                W[i] = Matrix.Func(W[i], Matrix.Func( Gradient[i], (x) => (0.1*((double)1/X.GetLength(0))* x)),(x,y)=> x-y);  
         }
 
 
