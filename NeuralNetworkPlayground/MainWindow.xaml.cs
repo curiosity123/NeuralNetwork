@@ -40,13 +40,13 @@ namespace NeuralNetworkPlayground
         int rawStride;
         byte[] pixelData;
 
-        void SetPixel(int x, int y, byte r, byte b, byte[] buffer, int rawStride)
+        void SetPixel(int x, int y,  byte b, byte[] buffer, int rawStride)
         {
             int xIndex = x * 3;
             int yIndex = y * rawStride;
-            buffer[xIndex + yIndex] = r;
-            buffer[xIndex + yIndex + 1] = 0;
-            buffer[xIndex + yIndex + 2] = b;
+            buffer[xIndex + yIndex] = 0;
+            buffer[xIndex + yIndex + 1] =b;
+            buffer[xIndex + yIndex + 2] = 0;
         }
 
         private void Draw()
@@ -60,12 +60,12 @@ namespace NeuralNetworkPlayground
             for (int x = 0; x < 300; x++)
                 for (int y = 0; y < 300; y++)
                 {
+
                     double[,] input = new double[,] { { ((double)x / 300), ((double)y / 300) } };
                     double[,] result = nn.CheckAnswer(input);
-                    if (result[0, 0] > 0)
-                        SetPixel(x, y, (byte)(result[0, 0] * 254),0, pixelData, rawStride);
-                    else
-                        SetPixel(x, y, 0,(byte)(result[0, 0] * -254), pixelData, rawStride);
+                    if (result[0, 0] < 0)
+                        result[0,0] = 0;
+                        SetPixel(x, y, (byte)(result[0,0]*255), pixelData, rawStride);
                 }
 
 
@@ -148,18 +148,18 @@ namespace NeuralNetworkPlayground
 
             for (int i = BluePoint.Count(); i < BluePoint.Count() + OrangePoint.Count(); i++)
             {
-                X[i, 0] = OrangePoint[i - BluePoint.Count()].X / 300;
-                X[i, 1] = OrangePoint[i - BluePoint.Count()].Y / 300;
-                Y[i, 0] = -1;
+                X[i, 0] = (OrangePoint[i - BluePoint.Count()].X / 300);
+                X[i, 1] = (OrangePoint[i - BluePoint.Count()].Y / 300);
+                Y[i, 0] = 0;
             }
 
 
             Layer[] layers = new Layer[]
             {
                 new Layer(LayerType.Input,  X, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 6, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 6, ActivationFunction.Tanh),
-                               new Layer(LayerType.Hidden, 5, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 3, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 2, ActivationFunction.Tanh),
+                               //new Layer(LayerType.Hidden, 6, ActivationFunction.Tanh),
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
             nn = new NEngine(layers, Y);
