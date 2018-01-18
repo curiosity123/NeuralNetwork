@@ -201,7 +201,7 @@ namespace NeuralNetworkScratch
         public void UpdateWeight()
         {
             for (int i = 0; i < W.Length; i++)
-                W[i] = Matrix.Func(W[i], Matrix.Func(Gradient[i], (x) => (0.3 * ((double)1 / X.GetLength(0)) * x)), (x, y) => x - y);
+                W[i] = Matrix.Func(W[i], Matrix.Func(Gradient[i], (x) => (0.1 * ((double)1 / X.GetLength(0)) * x)), (x, y) => x - y);
         }
 
 
