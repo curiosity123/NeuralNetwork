@@ -40,36 +40,36 @@ namespace NeuralNetworkPlayground
         int rawStride;
         byte[] pixelData;
 
-        void SetPixel(int x, int y, byte c, byte[] buffer, int rawStride)
+        void SetPixel(int x, int y, byte r, byte b, byte[] buffer, int rawStride)
         {
             int xIndex = x * 3;
             int yIndex = y * rawStride;
-            buffer[xIndex + yIndex] = c;
-            buffer[xIndex + yIndex + 1] = c;
-            buffer[xIndex + yIndex + 2] = c;
+            buffer[xIndex + yIndex] = r;
+            buffer[xIndex + yIndex + 1] = 0;
+            buffer[xIndex + yIndex + 2] = b;
         }
 
         private void Draw()
         {
             ClearCanvas();
 
-            rawStride = (400 * pf.BitsPerPixel + 7) / 8;
-            pixelData = new byte[rawStride * 400];
+            rawStride = (300 * pf.BitsPerPixel + 7) / 8;
+            pixelData = new byte[rawStride * 300];
 
 
-            for (int x = 0; x < 400; x++)
-                for (int y = 0; y < 400; y++)
+            for (int x = 0; x < 300; x++)
+                for (int y = 0; y < 300; y++)
                 {
-                    double[,] input = new double[,] { { ((double)x / 400), ((double)y / 400) } };
+                    double[,] input = new double[,] { { ((double)x / 300), ((double)y / 300) } };
                     double[,] result = nn.CheckAnswer(input);
-                    //if (result[0, 0] > 0)
-                    SetPixel(x, y, (byte)(result[0, 0] * 254), pixelData, rawStride);
-                    //else
-                    //    SetPixel(x, y, Colors.Green, pixelData, rawStride);
+                    if (result[0, 0] > 0)
+                        SetPixel(x, y, (byte)(result[0, 0] * 254),0, pixelData, rawStride);
+                    else
+                        SetPixel(x, y, 0,(byte)(result[0, 0] * -254), pixelData, rawStride);
                 }
 
 
-            bitmap = BitmapSource.Create(400, 400, 96, 96, pf, null, pixelData, rawStride);
+            bitmap = BitmapSource.Create(300, 300, 96, 96, pf, null, pixelData, rawStride);
             Image img = new Image();
             img.Source = bitmap;
 
@@ -141,15 +141,15 @@ namespace NeuralNetworkPlayground
 
             for (int i = 0; i < BluePoint.Count(); i++)
             {
-                X[i, 0] = BluePoint[i].X / 400;
-                X[i, 1] = BluePoint[i].Y / 400;
+                X[i, 0] = BluePoint[i].X / 300;
+                X[i, 1] = BluePoint[i].Y / 300;
                 Y[i, 0] = 1;
             }
 
             for (int i = BluePoint.Count(); i < BluePoint.Count() + OrangePoint.Count(); i++)
             {
-                X[i, 0] = OrangePoint[i - BluePoint.Count()].X / 400;
-                X[i, 1] = OrangePoint[i - BluePoint.Count()].Y / 400;
+                X[i, 0] = OrangePoint[i - BluePoint.Count()].X / 300;
+                X[i, 1] = OrangePoint[i - BluePoint.Count()].Y / 300;
                 Y[i, 0] = -1;
             }
 
@@ -157,9 +157,9 @@ namespace NeuralNetworkPlayground
             Layer[] layers = new Layer[]
             {
                 new Layer(LayerType.Input,  X, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 4, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 4, ActivationFunction.Tanh),
-                               new Layer(LayerType.Hidden, 3, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 6, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 6, ActivationFunction.Tanh),
+                               new Layer(LayerType.Hidden, 5, ActivationFunction.Tanh),
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
             nn = new NEngine(layers, Y);
