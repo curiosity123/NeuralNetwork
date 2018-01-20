@@ -69,10 +69,11 @@ namespace NeuralNetworkScratch
         }
         public static double[,] Rand(double[,] matrix, Random r)
         {
+
+            int b = 0;
             for (int i = 0; i < matrix.GetLength(0); i++)
                 for (int j = 0; j < matrix.GetLength(1); j++)
-                    matrix[i, j] = (( r.NextDouble()) );
-
+                        matrix[i, j] = (0.125-(r.NextDouble()/4))*8;
             return matrix;
         }
         public static double[,] AddFeatureBias(double[,] A, double value)
