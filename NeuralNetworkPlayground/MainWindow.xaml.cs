@@ -40,12 +40,12 @@ namespace NeuralNetworkPlayground
         int rawStride;
         byte[] pixelData;
 
-        void SetPixel(int x, int y,  byte b, byte[] buffer, int rawStride)
+        void SetPixel(int x, int y, byte b, byte[] buffer, int rawStride)
         {
             int xIndex = x * 3;
             int yIndex = y * rawStride;
             buffer[xIndex + yIndex] = 0;
-            buffer[xIndex + yIndex + 1] =b;
+            buffer[xIndex + yIndex + 1] = b;
             buffer[xIndex + yIndex + 2] = 0;
         }
 
@@ -63,9 +63,14 @@ namespace NeuralNetworkPlayground
 
                     double[,] input = new double[,] { { ((double)x / 300), ((double)y / 300) } };
                     double[,] result = nn.CheckAnswer(input);
-                    if (result[0, 0] < 0)
-                        result[0,0] = 0;
-                        SetPixel(x, y, (byte)(result[0,0]*255), pixelData, rawStride);
+
+                    byte color = 0;
+                    if (result[0, 0] >= 0)
+                        color = (byte)(127 + (byte)(result[0, 0] * 127));
+                    else
+                        color = (byte)(127 + (byte)(result[0, 0] * 127));
+
+                    SetPixel(x, y, color, pixelData, rawStride);
                 }
 
 
@@ -150,16 +155,16 @@ namespace NeuralNetworkPlayground
             {
                 X[i, 0] = (OrangePoint[i - BluePoint.Count()].X / 300);
                 X[i, 1] = (OrangePoint[i - BluePoint.Count()].Y / 300);
-                Y[i, 0] = 0;
+                Y[i, 0] = -1;
             }
 
 
             Layer[] layers = new Layer[]
             {
                 new Layer(LayerType.Input,  X, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 5, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 6, ActivationFunction.Tanh),
+                                new Layer(LayerType.Hidden, 5, ActivationFunction.Tanh),
                 new Layer(LayerType.Hidden, 4, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 3, ActivationFunction.Tanh),
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
             nn = new NEngine(layers, Y);
@@ -170,7 +175,7 @@ namespace NeuralNetworkPlayground
 
         private void CheckLoss_Click(object sender, RoutedEventArgs e)
         {
-              NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
+            NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
         }
 
         private void Print_Click(object sender, RoutedEventArgs e)

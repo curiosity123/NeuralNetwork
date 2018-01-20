@@ -71,7 +71,7 @@ namespace NeuralNetworkScratch
         {
             for (int i = 0; i < matrix.GetLength(0); i++)
                 for (int j = 0; j < matrix.GetLength(1); j++)
-                    matrix[i, j] = (( r.NextDouble()) - 0.5);
+                    matrix[i, j] = (( r.NextDouble()) );
 
             return matrix;
         }

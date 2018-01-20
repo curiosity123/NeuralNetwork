@@ -85,7 +85,7 @@ namespace NeuralNetworkScratch
         }
 
 
-        public double[,] CheckAnswer(double [,] TX)
+        public double[,] CheckAnswer(double[,] TX)
         {
             double[][,] At = new double[layers.Length - 1][,];
             double[][,] Zt = new double[layers.Length - 1][,];
@@ -108,7 +108,7 @@ namespace NeuralNetworkScratch
             }
 
 
-                for (int i = 0; i < layers.Length - 1; i++)
+            for (int i = 0; i < layers.Length - 1; i++)
             {
                 if (i == 0)
                 {
