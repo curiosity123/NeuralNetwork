@@ -21,7 +21,7 @@ namespace NeuralNetworkScratch
         private Layer[] layers;
         private readonly double _learningRate = 0.1;
 
-        public NEngine(Layer[] layers, double[,] Y, double LearningRate=0.1)
+        public NEngine(Layer[] layers, double[,] Y, double LearningRate = 0.1)
         {
             this.Y = Y;
             this.layers = layers;
@@ -146,25 +146,13 @@ namespace NeuralNetworkScratch
 
             return A[layers.Length - 2];
         }
-        public void BackwardPropagation()
+        public void BackwardPropagation(int Iteration=1000)
         {
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < Iteration; i++)
             {
-
                 GradientFunction();
                 UpdateWeight();
                 ForwardPropagation();
-
-                //if (i % 1000 == 0)
-                //{
-                //    //Console.Clear();
-                //    //Matrix.Print(A[A.Length - 1]);
-                //    //Console.Write("\n");
-                //    //Matrix.Print(Y);
-                //    //Thread.Sleep(5);
-                //}
-
-
             }
         }
 

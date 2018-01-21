@@ -119,7 +119,7 @@ namespace NeuralNetworkPlayground
         {
             if (nn != null)
             {
-                nn.BackwardPropagation();
+                nn.BackwardPropagation(500);
                 Draw();
             }
         }
