@@ -1,5 +1,7 @@
 # NeuralNetworkScratch
 
+in future
+
 - add loss callback
 - add matrix row mixer and divider (for test data)
 - connect loss with test data
