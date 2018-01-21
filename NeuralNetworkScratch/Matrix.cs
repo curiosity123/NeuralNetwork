@@ -73,7 +73,7 @@ namespace NeuralNetworkScratch
             int b = 0;
             for (int i = 0; i < matrix.GetLength(0); i++)
                 for (int j = 0; j < matrix.GetLength(1); j++)
-                        matrix[i, j] = (0.125-(r.NextDouble()/4))*8;
+                        matrix[i, j] = (0.1-(r.NextDouble()/5))*10;
             return matrix;
         }
         public static double[,] AddFeatureBias(double[,] A, double value)
