@@ -26,6 +26,8 @@ namespace NeuralNetworkScratch
             this.func = tanh;
         }
     }
+
+
     public enum LayerType
     {
         Input,
