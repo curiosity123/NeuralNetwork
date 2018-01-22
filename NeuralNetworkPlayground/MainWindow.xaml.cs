@@ -162,9 +162,9 @@ namespace NeuralNetworkPlayground
             Layer[] layers = new Layer[]
             {
                 new Layer(LayerType.Input,  X, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 7, ActivationFunction.Tanh),
                 new Layer(LayerType.Hidden, 6, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 5, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 4, ActivationFunction.Tanh),
+               // new Layer(LayerType.Hidden, 5, ActivationFunction.Tanh),
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
             nn = new NEngine(layers, Y,0.2,1);
