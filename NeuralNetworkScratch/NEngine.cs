@@ -50,7 +50,7 @@ namespace NeuralNetworkScratch
                 if (i == 1)
                 {
                     A[i - 1] = new double[X.GetLength(0), layers[i].neurons];
-                    W[i - 1] = new double[X.GetLength(1) , layers[i].neurons];
+                    W[i - 1] = new double[X.GetLength(1)-1 , layers[i].neurons];
                 }
                 else if (i == layers.Length - 1)
                 {
@@ -86,6 +86,7 @@ namespace NeuralNetworkScratch
 
                 W[i - 1] = Matrix.AddWeightBias(W[i - 1], 0.1);
             }
+     
         }
 
 
@@ -168,7 +169,8 @@ namespace NeuralNetworkScratch
                 if (i == 1) // input layer 
                 {
                     Sigma[0] = Matrix.Func(Matrix.Mul(Sigma[1], Matrix.Transpose(W[1])), Matrix.Func(Matrix.AddFeatureBias(Z[0], 1), (x) => Matrix.TanhPrime(x)), (x, y) => x * y);
-                    Gradient[0] = Matrix.RemoveFeatureBias(Matrix.Mul(Matrix.Transpose(Matrix.AddFeatureBias(X, 1)), Sigma[0]));
+                    Sigma[0] = Matrix.RemoveFeatureBias(Sigma[0]);
+                    Gradient[0] = Matrix.Mul(Matrix.Transpose(X), Sigma[0]);
 
                 }
                 else if (i == layers.Length - 1) // output layer
@@ -197,7 +199,7 @@ namespace NeuralNetworkScratch
              //   if (i == 0)
               //      Gradient[i] = Matrix.RemoveFeatureBias(Gradient[i]);
 
-                //    Gradient[i] = Matrix.Func(Gradient[i], W[i], (x, y) => x - (_regularizationRate * y));
+                    //Gradient[i] = Matrix.Func(Gradient[i], W[i], (x, y) => x - (_regularizationRate * y));
                 W[i] = Matrix.Func(W[i], Matrix.Func(Gradient[i], (x) => (_learningRate * ((double)1 / X.GetLength(0)) * x)), (x, y) => x - y);
             }
         }
