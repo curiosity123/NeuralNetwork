@@ -41,7 +41,7 @@ namespace NeuralNetworkScratch
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
 
-            NEngine nn = new NEngine(layers, Y);
+            NEngine nn = new NEngine(layers, Y,0.1,1);
             Matrix.Print(nn.ForwardPropagation());
             Console.WriteLine("\n\n");
             nn.BackwardPropagation();

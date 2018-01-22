@@ -162,12 +162,12 @@ namespace NeuralNetworkPlayground
             Layer[] layers = new Layer[]
             {
                 new Layer(LayerType.Input,  X, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 7, ActivationFunction.Tanh),
                 new Layer(LayerType.Hidden, 6, ActivationFunction.Tanh),
                 new Layer(LayerType.Hidden, 5, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 3, ActivationFunction.Tanh),
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
-            nn = new NEngine(layers, Y);
+            nn = new NEngine(layers, Y,0.1,1);
             NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
 
         }

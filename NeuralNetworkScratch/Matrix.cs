@@ -69,8 +69,6 @@ namespace NeuralNetworkScratch
         }
         public static double[,] Rand(double[,] matrix, Random r)
         {
-
-            int b = 0;
             for (int i = 0; i < matrix.GetLength(0); i++)
                 for (int j = 0; j < matrix.GetLength(1); j++)
                         matrix[i, j] = (0.1-(r.NextDouble()/5))*10;
@@ -98,6 +96,19 @@ namespace NeuralNetworkScratch
                 for (int j = 0; j < A.GetLength(1) - 1; j++)
                     B[i, j] = A[i, j];
 
+            }
+
+            return B;
+        }
+
+        public static double[,] RemoveWeightBias(double[,] A)
+        {
+            double[,] B = new double[A.GetLength(0)- 1, A.GetLength(1) ];
+
+            for (int i = 0; i < A.GetLength(0) - 1; i++)
+            {
+                for (int j = 0; j < A.GetLength(1); j++)
+                    B[i, j] = A[i, j];
             }
 
             return B;

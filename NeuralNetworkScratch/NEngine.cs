@@ -20,12 +20,14 @@ namespace NeuralNetworkScratch
 
         private Layer[] layers;
         private readonly double _learningRate = 0.1;
+        private readonly double _regularizationRate = 0.1;
 
-        public NEngine(Layer[] layers, double[,] Y, double LearningRate = 0.1)
+        public NEngine(Layer[] layers, double[,] Y, double LearningRate, double ReguralizationRate)
         {
             this.Y = Y;
             this.layers = layers;
             _learningRate = LearningRate;
+            _regularizationRate = ReguralizationRate;
 
             Initialize();
             ForwardPropagation();
@@ -48,7 +50,7 @@ namespace NeuralNetworkScratch
                 if (i == 1)
                 {
                     A[i - 1] = new double[X.GetLength(0), layers[i].neurons];
-                    W[i - 1] = new double[X.GetLength(1) - 1, layers[i].neurons];
+                    W[i - 1] = new double[X.GetLength(1) , layers[i].neurons];
                 }
                 else if (i == layers.Length - 1)
                 {
@@ -146,7 +148,7 @@ namespace NeuralNetworkScratch
 
             return A[layers.Length - 2];
         }
-        public void BackwardPropagation(int Iteration=1000)
+        public void BackwardPropagation(int Iteration = 1000)
         {
             for (int i = 0; i < Iteration; i++)
             {
@@ -191,7 +193,13 @@ namespace NeuralNetworkScratch
         public void UpdateWeight()
         {
             for (int i = 0; i < W.Length; i++)
+            {
+             //   if (i == 0)
+              //      Gradient[i] = Matrix.RemoveFeatureBias(Gradient[i]);
+
+                //    Gradient[i] = Matrix.Func(Gradient[i], W[i], (x, y) => x - (_regularizationRate * y));
                 W[i] = Matrix.Func(W[i], Matrix.Func(Gradient[i], (x) => (_learningRate * ((double)1 / X.GetLength(0)) * x)), (x, y) => x - y);
+            }
         }
 
 
