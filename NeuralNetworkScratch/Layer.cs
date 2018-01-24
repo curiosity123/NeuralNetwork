@@ -11,21 +11,22 @@ namespace NeuralNetworkScratch
         public LayerType type;
         public double[,] matrix;
         public int neurons;
-        public ActivationFunction func;
+        public ActivationFunction Type;
 
         public Layer(LayerType input, double[,] x, ActivationFunction tanh)
         {
             this.type = input;
             this.matrix = x;
-            this.func = tanh;
+            this.Type = tanh;
         }
         public Layer(LayerType input, int neuronsCount, ActivationFunction tanh)
         {
             this.type = input;
             this.neurons = neuronsCount;
-            this.func = tanh;
+            this.Type = tanh;
         }
     }
+
 
 
     public enum LayerType
