@@ -166,7 +166,7 @@ namespace NeuralNetworkPlayground
                 new Layer(LayerType.Hidden, 6, ActivationFunction.Tanh),
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
-            nn = new NEngine(layers, Y,0.2,0.01);
+            nn = new NEngine(layers, Y,0.2,0.001);
             NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
 
         }
