@@ -132,10 +132,7 @@ namespace NeuralNetworkScratch
 
             return B;
         }
-        public static double TanhPrime(double x)
-        {
-            return (1 - Math.Pow(Math.Tanh(x), 2));// (x * (1 - x));
-        }
+
         public static void Print(double[,] z)
         {
             for (int i = 0; i < z.GetLength(0); i++)
