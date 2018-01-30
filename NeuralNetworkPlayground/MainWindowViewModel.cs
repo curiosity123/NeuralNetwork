@@ -53,6 +53,58 @@ namespace NeuralNetworkPlayground
             set { myVar = value; }
         }
 
+        public ICommand MouseLeftCommand { get { return new RelayCommand(x => true, MouseLeft); } }
+        private void MouseLeft(object obj)
+        {
+            MouseClick(MouseButton.Left);
+
+        }
+
+
+        public ICommand MouseRightCommand { get { return new RelayCommand(x => true, MouseRight); } }
+        private void MouseRight(object obj)
+        {
+            MouseClick(MouseButton.Right);
+        }
+
+
+        public ICommand LearnCommand { get { return new RelayCommand(x => true, Learn); } }
+        private void Learn(object obj)
+        {
+            if (nn != null)
+            {
+                nn.BackwardPropagation(500);
+                Draw();
+            }
+        }
+
+
+        public ICommand ClearCommand { get { return new RelayCommand(x => true, Clear); } }
+        private void Clear(object obj)
+        {
+            ClearCanvas();
+            BluePoint.Clear();
+            OrangePoint.Clear();
+        }
+
+
+        NEngine nn;
+        List<Point> BluePoint = new List<Point>();
+        List<Point> OrangePoint = new List<Point>();
+
+        BitmapSource bitmap;
+        PixelFormat pf = PixelFormats.Rgb24;
+        int rawStride;
+        byte[] pixelData;
+
+        private void SetPixel(int x, int y, byte r, byte g, byte b, byte[] buffer, int rawStride)
+        {
+            int xIndex = x * 3;
+            int yIndex = y * rawStride;
+            buffer[xIndex + yIndex] = r;
+            buffer[xIndex + yIndex + 1] = g;
+            buffer[xIndex + yIndex + 2] = b;
+        }
 
         private void MouseClick(MouseButton mb)
         {
@@ -93,63 +145,6 @@ namespace NeuralNetworkPlayground
             };
             nn = new NEngine(layers, Y, 0.2, 0.001);
             NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
-        }
-
-
-        public ICommand MouseLeftCommand { get { return new RelayCommand(x => true, MouseLeft); } }
-        private void MouseLeft(object obj)
-        {
-            MouseClick(MouseButton.Left);
-
-        }
-
-
-        public ICommand MouseRightCommand { get { return new RelayCommand(x => true, MouseRight); } }
-        private void MouseRight(object obj)
-        {
-            MouseClick(MouseButton.Right);
-        }
-
-
-        public ICommand LearnCommand { get { return new RelayCommand(x => true, Learn); } }
-        private void Learn(object obj)
-        {
-            if (nn != null)
-            {
-                nn.BackwardPropagation(500);
-                Draw();
-            }
-        }
-
-
-        public ICommand ClearCommand { get { return new RelayCommand(x => true, Clear); } }
-        private void Clear(object obj)
-        {
-            ClearCanvas();
-            BluePoint.Clear();
-            OrangePoint.Clear();
-        }
-
-
-
-
-
-        NEngine nn;
-        List<Point> BluePoint = new List<Point>();
-        List<Point> OrangePoint = new List<Point>();
-
-        BitmapSource bitmap;
-        PixelFormat pf = PixelFormats.Rgb24;
-        int rawStride;
-        byte[] pixelData;
-
-        void SetPixel(int x, int y, byte r, byte g, byte b, byte[] buffer, int rawStride)
-        {
-            int xIndex = x * 3;
-            int yIndex = y * rawStride;
-            buffer[xIndex + yIndex] = r;
-            buffer[xIndex + yIndex + 1] = g;
-            buffer[xIndex + yIndex + 2] = b;
         }
 
         private void Draw()
@@ -206,6 +201,8 @@ namespace NeuralNetworkPlayground
         }
 
 
+
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected void RaisePropertyChangedEvent(string propertyName)
         {
@@ -213,7 +210,6 @@ namespace NeuralNetworkPlayground
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
-
     }
     public class MouseBehaviour : Behavior<ItemsControl>
     {
