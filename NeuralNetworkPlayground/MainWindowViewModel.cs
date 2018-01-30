@@ -171,6 +171,13 @@ namespace NeuralNetworkPlayground
                         SetPixel(x, y, 0, color, 0, pixelData, rawStride);
                     }
 
+            DrawPoints();
+            PrintImage();
+        }
+
+        private void DrawPoints()
+        {
+            ClearCanvas();
             foreach (Point p in BluePoint)
             {
                 SetPixel((int)p.X, (int)p.Y, 0, 0, 255, pixelData, rawStride);
@@ -185,8 +192,11 @@ namespace NeuralNetworkPlayground
                 SetPixel((int)p.X, (int)p.Y + 1, 255, 0, 0, pixelData, rawStride);
                 SetPixel((int)p.X + 1, (int)p.Y + 1, 255, 0, 0, pixelData, rawStride);
             }
+            PrintImage();
+        }
 
-
+        private void PrintImage()
+        {
             bitmap = BitmapSource.Create(300, 300, 96, 96, pf, null, pixelData, rawStride);
             Image img = new Image();
 
