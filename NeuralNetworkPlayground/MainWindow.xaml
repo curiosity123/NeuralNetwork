@@ -4,21 +4,42 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NeuralNetworkPlayground"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         Title="MainWindow"  SizeToContent="WidthAndHeight">
+
+    <Window.DataContext >
+        <local:MainWindowViewModel x:Name="context"/>
+    </Window.DataContext>
+
+
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="300"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
         <Border BorderBrush="Black" BorderThickness="2">
-            <Canvas x:Name="canvas" Grid.Row="0" Height="300" Width="300" Background="White" Mouse.MouseDown="canvas_MouseDown"></Canvas>
+            <ItemsControl x:Name="canvas" Grid.Row="0" Height="300" Width="300" Background="Black" ItemsSource="{Binding CanvasCollection}" >
+                <i:Interaction.Behaviors>
+                    <local:MouseBehaviour MouseX="{Binding PanelX, Mode=OneWayToSource}"
+                                          MouseY="{Binding PanelY, Mode=OneWayToSource}" />
+                </i:Interaction.Behaviors>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                        <i:InvokeCommandAction Command="{Binding MouseLeftCommand}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="PreviewMouseRightButtonDown">
+                        <i:InvokeCommandAction Command="{Binding MouseRightCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+
+            </ItemsControl>
         </Border>
         <StackPanel Grid.Row="1" Height="30" Background="LightBlue" Orientation="Horizontal">
-            <Button x:Name="Clear" Height="30" Click="Clear_Click" >Clear</Button>
-            <Button x:Name="Lear" Height="30" Click="Lear_Click" >Learn</Button>
-            <Button x:Name="Print" Height="30" Click="Print_Click" >Print</Button>
-            <Button x:Name="CheckLoss" Height="30" Click="CheckLoss_Click" >Loss</Button>
+            <Button x:Name="Clear" Height="30" Command="{Binding ClearCommand}"  >Clear</Button>
+            <Button x:Name="Lear" Height="30"  Command="{Binding LearnCommand}"  >Learn</Button>
         </StackPanel>
 
     </Grid>
