@@ -19,6 +19,20 @@ namespace NeuralNetworkPlayground
     public class MainWindowViewModel : INotifyPropertyChanged
     {
 
+        NEngine nn;
+        List<Point> BluePoint = new List<Point>();
+        List<Point> OrangePoint = new List<Point>();
+
+        BitmapSource bitmap;
+        PixelFormat pf = PixelFormats.Rgb24;
+        int rawStride;
+        byte[] pixelData;
+
+        public MainWindowViewModel()
+        {
+            rawStride = (300 * pf.BitsPerPixel + 7) / 8;
+            pixelData = new byte[rawStride * 300];
+        }
         private double _panelX;
         private double _panelY;
 
@@ -85,17 +99,11 @@ namespace NeuralNetworkPlayground
             ClearCanvas();
             BluePoint.Clear();
             OrangePoint.Clear();
+            pixelData = new byte[rawStride * 300];
         }
 
 
-        NEngine nn;
-        List<Point> BluePoint = new List<Point>();
-        List<Point> OrangePoint = new List<Point>();
 
-        BitmapSource bitmap;
-        PixelFormat pf = PixelFormats.Rgb24;
-        int rawStride;
-        byte[] pixelData;
 
         private void SetPixel(int x, int y, byte r, byte g, byte b, byte[] buffer, int rawStride)
         {
@@ -108,14 +116,13 @@ namespace NeuralNetworkPlayground
 
         private void MouseClick(MouseButton mb)
         {
-            nn = null;
             Point p = new Point(PanelX, PanelY);
             if (mb == MouseButton.Left)
                 BluePoint.Add(p);
             else
                 OrangePoint.Add(p);
 
-            Draw();
+            DrawPoints();
 
             double[,] X = new double[BluePoint.Count() + OrangePoint.Count(), 2];
             double[,] Y = new double[BluePoint.Count() + OrangePoint.Count(), 1];
@@ -149,12 +156,6 @@ namespace NeuralNetworkPlayground
 
         private void Draw()
         {
-            ClearCanvas();
-
-            rawStride = (300 * pf.BitsPerPixel + 7) / 8;
-            pixelData = new byte[rawStride * 300];
-
-            if (nn != null)
                 for (int x = 0; x < 300; x++)
                     for (int y = 0; y < 300; y++)
                     {
