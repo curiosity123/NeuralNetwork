@@ -88,7 +88,7 @@ namespace NeuralNetworkPlayground
             if (nn != null)
             {
                 nn.BackwardPropagation(500);
-                Draw();
+                DrawNetworkAnswer();
             }
         }
 
@@ -154,23 +154,23 @@ namespace NeuralNetworkPlayground
             NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
         }
 
-        private void Draw()
+        private void DrawNetworkAnswer()
         {
-                for (int x = 0; x < 300; x++)
-                    for (int y = 0; y < 300; y++)
-                    {
+            for (int x = 0; x < 300; x++)
+                for (int y = 0; y < 300; y++)
+                {
 
-                        double[,] input = new double[,] { { ((double)x / 300), ((double)y / 300) } };
-                        double[,] result = nn.CheckAnswer(input);
+                    double[,] input = new double[,] { { ((double)x / 300), ((double)y / 300) } };
+                    double[,] result = nn.CheckAnswer(input);
 
-                        byte color = 0;
-                        if (result[0, 0] >= 0)
-                            color = (byte)(127 + (byte)(result[0, 0] * 127));
-                        else
-                            color = (byte)(127 + (byte)(result[0, 0] * 127));
+                    byte color = 0;
+                    if (result[0, 0] >= 0)
+                        color = (byte)(127 + (byte)(result[0, 0] * 127));
+                    else
+                        color = (byte)(127 + (byte)(result[0, 0] * 127));
 
-                        SetPixel(x, y, 0, color, 0, pixelData, rawStride);
-                    }
+                    SetPixel(x, y, 0, color, 0, pixelData, rawStride);
+                }
 
             DrawPoints();
             PrintImage();
@@ -210,9 +210,6 @@ namespace NeuralNetworkPlayground
         {
             CanvasCollection.Clear();
         }
-
-
-
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void RaisePropertyChangedEvent(string propertyName)
