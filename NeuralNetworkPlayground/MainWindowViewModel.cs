@@ -33,6 +33,7 @@ namespace NeuralNetworkPlayground
             rawStride = (300 * pf.BitsPerPixel + 7) / 8;
             pixelData = new byte[rawStride * 300];
         }
+
         private double _panelX;
         private double _panelY;
 
@@ -59,12 +60,12 @@ namespace NeuralNetworkPlayground
         }
 
 
-        private ObservableCollection<UIElement> myVar = new ObservableCollection<UIElement>();
+        private ObservableCollection<UIElement> canvasCollection = new ObservableCollection<UIElement>();
 
         public ObservableCollection<UIElement> CanvasCollection
         {
-            get { return myVar; }
-            set { myVar = value; }
+            get { return canvasCollection; }
+            set { canvasCollection = value; }
         }
 
         public ICommand MouseLeftCommand { get { return new RelayCommand(x => true, MouseLeft); } }
