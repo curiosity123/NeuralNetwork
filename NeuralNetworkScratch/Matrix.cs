@@ -71,9 +71,10 @@ namespace NeuralNetworkScratch
         {
             for (int i = 0; i < matrix.GetLength(0); i++)
                 for (int j = 0; j < matrix.GetLength(1); j++)
-                        matrix[i, j] = (0.1-(r.NextDouble()/5))*10;
+                    matrix[i, j] = (0.1 - (r.NextDouble() / 5)) * 10;
             return matrix;
         }
+
         public static double[,] AddFeatureBias(double[,] A, double value)
         {
             double[,] B = new double[A.GetLength(0), A.GetLength(1) + 1];
@@ -138,7 +139,7 @@ namespace NeuralNetworkScratch
             for (int i = 0; i < z.GetLength(0); i++)
             {
                 for (int j = 0; j < z.GetLength(1); j++)
-                    Console.Write(Math.Round(z[i, j], 4).ToString() + "\t");
+                    Console.Write(Math.Round(z[i, j], 3).ToString() + "\t");
                 Console.Write("\n");
             }
         }

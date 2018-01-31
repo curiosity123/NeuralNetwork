@@ -88,7 +88,7 @@ namespace NeuralNetworkPlayground
         {
             if (nn != null)
             {
-                nn.BackwardPropagation(500);
+                nn.BackwardPropagation(1000);
                 DrawNetworkAnswer();
             }
         }
@@ -102,8 +102,6 @@ namespace NeuralNetworkPlayground
             OrangePoint.Clear();
             pixelData = new byte[rawStride * 300];
         }
-
-
 
 
         private void SetPixel(int x, int y, byte r, byte g, byte b, byte[] buffer, int rawStride)
@@ -145,13 +143,13 @@ namespace NeuralNetworkPlayground
 
             Layer[] layers = new Layer[]
             {
-                new Layer(LayerType.Input,  X, ActivationFunction.Tanh),
+                new Layer(LayerType.Input,  X, ActivationFunction.Sigmoid),
+                new Layer(LayerType.Hidden, 7, ActivationFunction.Tanh),
                 new Layer(LayerType.Hidden, 6, ActivationFunction.Tanh),
                 new Layer(LayerType.Hidden, 5, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 4, ActivationFunction.Tanh),
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
-            nn = new NEngine(layers, Y, 0.2, 0.001);
+            nn = new NEngine(layers, Y,0.1, 0);
             NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
         }
 
