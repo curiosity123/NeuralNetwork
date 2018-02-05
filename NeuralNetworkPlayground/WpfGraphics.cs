@@ -15,20 +15,23 @@ namespace NeuralNetworkPlayground
     {
         BitmapSource bitmap;
         PixelFormat pf = PixelFormats.Rgb24;
-        readonly int rawStride;
+        int rawStride;
         byte[] pixelData;
         ObservableCollection<UIElement> canvasCollection;
-
+        int Width, Height;
 
         private WpfGraphics()
         {
-            rawStride = (300 * pf.BitsPerPixel + 7) / 8;
-            pixelData = new byte[rawStride * 300];
+
         }
 
 
-        public WpfGraphics(ObservableCollection<UIElement> _canvasCollection):this()
+        public WpfGraphics(ObservableCollection<UIElement> _canvasCollection, int _width = 300, int _height = 300)
         {
+            Width = _width;
+            Height = _height;
+            rawStride = (Height * pf.BitsPerPixel + 7) / 8;
+            pixelData = new byte[rawStride * Width];
             canvasCollection = _canvasCollection;
         }
 
@@ -47,13 +50,13 @@ namespace NeuralNetworkPlayground
         public void Clear()
         {
             canvasCollection.Clear();
-            pixelData = new byte[rawStride * 300];
+            pixelData = new byte[rawStride * Height];
         }
 
 
         public void Draw()
         {
-            bitmap = BitmapSource.Create(300, 300, 96, 96, pf, null, pixelData, rawStride);
+            bitmap = BitmapSource.Create(Width, Height, 96, 96, pf, null, pixelData, rawStride);
             Image img = new Image();
 
             img.Source = bitmap;
