@@ -15,7 +15,7 @@ namespace NeuralNetworkPlayground
     {
         BitmapSource bitmap;
         PixelFormat pf = PixelFormats.Rgb24;
-        int rawStride;
+        readonly int rawStride;
         byte[] pixelData;
         ObservableCollection<UIElement> canvasCollection;
 
@@ -51,7 +51,7 @@ namespace NeuralNetworkPlayground
         }
 
 
-        public void Print()
+        public void Draw()
         {
             bitmap = BitmapSource.Create(300, 300, 96, 96, pf, null, pixelData, rawStride);
             Image img = new Image();

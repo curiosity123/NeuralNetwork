@@ -22,12 +22,12 @@ namespace NeuralNetworkPlayground
         NEngine nn;
         List<Point> BluePoint = new List<Point>();
         List<Point> OrangePoint = new List<Point>();
-        WpfGraphics Graph;
+        WpfGraphics wpfGraphics;
 
 
         public MainWindowViewModel()
         {
-            Graph = new WpfGraphics(CanvasCollection);
+            wpfGraphics = new WpfGraphics(CanvasCollection);
         }
 
         private double _panelX;
@@ -93,7 +93,7 @@ namespace NeuralNetworkPlayground
         public ICommand ClearCommand { get { return new RelayCommand(x => true, Clear); } }
         private void Clear(object obj)
         {
-            Graph.Clear();
+            wpfGraphics.Clear();
             BluePoint.Clear();
             OrangePoint.Clear();
 
@@ -107,7 +107,7 @@ namespace NeuralNetworkPlayground
                 BluePoint.Add(p);
             else
                 OrangePoint.Add(p);
-            Graph.Clear();
+            wpfGraphics.Clear();
             DrawPoints();
 
             double[,] X = new double[BluePoint.Count() + OrangePoint.Count(), 2];
@@ -142,7 +142,7 @@ namespace NeuralNetworkPlayground
 
         private void DrawNetworkAnswer()
         {
-            Graph.Clear();
+            wpfGraphics.Clear();
             for (int x = 0; x < 300; x++)
                 for (int y = 0; y < 300; y++)
                 {
@@ -156,7 +156,7 @@ namespace NeuralNetworkPlayground
                     else
                         color = (byte)(127 + (byte)(result[0, 0] * 127));
 
-                    Graph.SetPixel(x, y, 0, color, 0);
+                    wpfGraphics.SetPixel(x, y, 0, color, 0);
                 }
 
             DrawPoints();
@@ -167,19 +167,19 @@ namespace NeuralNetworkPlayground
 
             foreach (Point p in BluePoint)
             {
-                Graph.SetPixel((int)p.X, (int)p.Y, 0, 0, 255);
-                Graph.SetPixel((int)p.X + 1, (int)p.Y, 0, 0, 255);
-                Graph.SetPixel((int)p.X, (int)p.Y + 1, 0, 0, 255);
-                Graph.SetPixel((int)p.X + 1, (int)p.Y + 1, 0, 0, 255);
+                wpfGraphics.SetPixel((int)p.X, (int)p.Y, 0, 0, 255);
+                wpfGraphics.SetPixel((int)p.X + 1, (int)p.Y, 0, 0, 255);
+                wpfGraphics.SetPixel((int)p.X, (int)p.Y + 1, 0, 0, 255);
+                wpfGraphics.SetPixel((int)p.X + 1, (int)p.Y + 1, 0, 0, 255);
             }
             foreach (Point p in OrangePoint)
             {
-                Graph.SetPixel((int)p.X, (int)p.Y, 255, 0, 0);
-                Graph.SetPixel((int)p.X + 1, (int)p.Y, 255, 0, 0);
-                Graph.SetPixel((int)p.X, (int)p.Y + 1, 255, 0, 0);
-                Graph.SetPixel((int)p.X + 1, (int)p.Y + 1, 255, 0, 0);
+                wpfGraphics.SetPixel((int)p.X, (int)p.Y, 255, 0, 0);
+                wpfGraphics.SetPixel((int)p.X + 1, (int)p.Y, 255, 0, 0);
+                wpfGraphics.SetPixel((int)p.X, (int)p.Y + 1, 255, 0, 0);
+                wpfGraphics.SetPixel((int)p.X + 1, (int)p.Y + 1, 255, 0, 0);
             }
-            Graph.Print();
+            wpfGraphics.Draw();
         }
 
 
