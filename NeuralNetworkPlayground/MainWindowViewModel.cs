@@ -22,16 +22,12 @@ namespace NeuralNetworkPlayground
         NEngine nn;
         List<Point> BluePoint = new List<Point>();
         List<Point> OrangePoint = new List<Point>();
+        WpfGraphics Graph;
 
-        BitmapSource bitmap;
-        PixelFormat pf = PixelFormats.Rgb24;
-        int rawStride;
-        byte[] pixelData;
 
         public MainWindowViewModel()
         {
-            rawStride = (300 * pf.BitsPerPixel + 7) / 8;
-            pixelData = new byte[rawStride * 300];
+            Graph = new WpfGraphics(CanvasCollection);
         }
 
         private double _panelX;
@@ -97,21 +93,12 @@ namespace NeuralNetworkPlayground
         public ICommand ClearCommand { get { return new RelayCommand(x => true, Clear); } }
         private void Clear(object obj)
         {
-            ClearCanvas();
+            Graph.Clear();
             BluePoint.Clear();
             OrangePoint.Clear();
-            pixelData = new byte[rawStride * 300];
+
         }
 
-
-        private void SetPixel(int x, int y, byte r, byte g, byte b, byte[] buffer, int rawStride)
-        {
-            int xIndex = x * 3;
-            int yIndex = y * rawStride;
-            buffer[xIndex + yIndex] = r;
-            buffer[xIndex + yIndex + 1] = g;
-            buffer[xIndex + yIndex + 2] = b;
-        }
 
         private void MouseClick(MouseButton mb)
         {
@@ -120,7 +107,7 @@ namespace NeuralNetworkPlayground
                 BluePoint.Add(p);
             else
                 OrangePoint.Add(p);
-
+            Graph.Clear();
             DrawPoints();
 
             double[,] X = new double[BluePoint.Count() + OrangePoint.Count(), 2];
@@ -155,6 +142,7 @@ namespace NeuralNetworkPlayground
 
         private void DrawNetworkAnswer()
         {
+            Graph.Clear();
             for (int x = 0; x < 300; x++)
                 for (int y = 0; y < 300; y++)
                 {
@@ -168,47 +156,34 @@ namespace NeuralNetworkPlayground
                     else
                         color = (byte)(127 + (byte)(result[0, 0] * 127));
 
-                    SetPixel(x, y, 0, color, 0, pixelData, rawStride);
+                    Graph.SetPixel(x, y, 0, color, 0);
                 }
 
             DrawPoints();
-            PrintImage();
         }
 
         private void DrawPoints()
         {
-            ClearCanvas();
+
             foreach (Point p in BluePoint)
             {
-                SetPixel((int)p.X, (int)p.Y, 0, 0, 255, pixelData, rawStride);
-                SetPixel((int)p.X + 1, (int)p.Y, 0, 0, 255, pixelData, rawStride);
-                SetPixel((int)p.X, (int)p.Y + 1, 0, 0, 255, pixelData, rawStride);
-                SetPixel((int)p.X + 1, (int)p.Y + 1, 0, 0, 255, pixelData, rawStride);
+                Graph.SetPixel((int)p.X, (int)p.Y, 0, 0, 255);
+                Graph.SetPixel((int)p.X + 1, (int)p.Y, 0, 0, 255);
+                Graph.SetPixel((int)p.X, (int)p.Y + 1, 0, 0, 255);
+                Graph.SetPixel((int)p.X + 1, (int)p.Y + 1, 0, 0, 255);
             }
             foreach (Point p in OrangePoint)
             {
-                SetPixel((int)p.X, (int)p.Y, 255, 0, 0, pixelData, rawStride);
-                SetPixel((int)p.X + 1, (int)p.Y, 255, 0, 0, pixelData, rawStride);
-                SetPixel((int)p.X, (int)p.Y + 1, 255, 0, 0, pixelData, rawStride);
-                SetPixel((int)p.X + 1, (int)p.Y + 1, 255, 0, 0, pixelData, rawStride);
+                Graph.SetPixel((int)p.X, (int)p.Y, 255, 0, 0);
+                Graph.SetPixel((int)p.X + 1, (int)p.Y, 255, 0, 0);
+                Graph.SetPixel((int)p.X, (int)p.Y + 1, 255, 0, 0);
+                Graph.SetPixel((int)p.X + 1, (int)p.Y + 1, 255, 0, 0);
             }
-            PrintImage();
+            Graph.Print();
         }
 
-        private void PrintImage()
-        {
-            bitmap = BitmapSource.Create(300, 300, 96, 96, pf, null, pixelData, rawStride);
-            Image img = new Image();
 
-            img.Source = bitmap;
 
-            CanvasCollection.Add(img);
-        }
-
-        private void ClearCanvas()
-        {
-            CanvasCollection.Clear();
-        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void RaisePropertyChangedEvent(string propertyName)
