@@ -40,6 +40,7 @@ namespace NeuralNetworkScratch
         {
             X = layers[0].matrix;
             X = Matrix.Unsort(ref X,ref Y, new Random());
+            X = Matrix.Unsort(ref X, ref Y, new Random());
             X = Matrix.AddFeatureBias(X, 1);
             W = new double[layers.Length - 1][,];
             Gradient = new double[layers.Length - 1][,];
