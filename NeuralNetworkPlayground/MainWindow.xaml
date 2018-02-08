@@ -22,7 +22,7 @@
         <Border BorderBrush="Black" BorderThickness="2">
             <ItemsControl x:Name="canvas" Grid.Row="0" Height="300" Width="300" Background="Black" ItemsSource="{Binding CanvasCollection}" >
                 <i:Interaction.Behaviors>
-                    <local:MouseBehaviour MouseX="{Binding PanelX, Mode=OneWayToSource}"
+                    <local:MouseBehaviour MouseX="{Binding PanelX, Mode=OneWayToSource}" 
                                           MouseY="{Binding PanelY, Mode=OneWayToSource}" />
                 </i:Interaction.Behaviors>
                 <i:Interaction.Triggers>

@@ -20,10 +20,9 @@ namespace NeuralNetworkPlayground
     {
 
         NEngine nn;
+        WpfGraphics wpfGraphics;
         List<Point> BluePoint = new List<Point>();
         List<Point> OrangePoint = new List<Point>();
-        WpfGraphics wpfGraphics;
-
 
         public MainWindowViewModel()
         {
@@ -67,7 +66,7 @@ namespace NeuralNetworkPlayground
         public ICommand MouseLeftCommand { get { return new RelayCommand(x => true, MouseLeft); } }
         private void MouseLeft(object obj)
         {
-            MouseClick(MouseButton.Left);
+            AddNewPoint(MouseButton.Left);
 
         }
 
@@ -75,7 +74,7 @@ namespace NeuralNetworkPlayground
         public ICommand MouseRightCommand { get { return new RelayCommand(x => true, MouseRight); } }
         private void MouseRight(object obj)
         {
-            MouseClick(MouseButton.Right);
+            AddNewPoint(MouseButton.Right);
         }
 
 
@@ -84,7 +83,7 @@ namespace NeuralNetworkPlayground
         {
             if (nn != null)
             {
-                nn.BackwardPropagation(1000);
+                nn.BackwardPropagation(500);
                 DrawNetworkAnswer();
             }
         }
@@ -100,14 +99,16 @@ namespace NeuralNetworkPlayground
         }
 
 
-        private void MouseClick(MouseButton mb)
+        private void AddNewPoint(MouseButton mb)
         {
             Point p = new Point(PanelX, PanelY);
             if (mb == MouseButton.Left)
                 BluePoint.Add(p);
             else
                 OrangePoint.Add(p);
+
             wpfGraphics.Clear();
+
             DrawPoints();
 
             double[,] X = new double[BluePoint.Count() + OrangePoint.Count(), 2];
@@ -136,7 +137,7 @@ namespace NeuralNetworkPlayground
                 new Layer(LayerType.Hidden, 5, ActivationFunction.Tanh),
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
-            nn = new NEngine(layers, Y,0.1, 0);
+            nn = new NEngine(layers, Y, 0.1, 0);
             NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
         }
 
@@ -181,8 +182,6 @@ namespace NeuralNetworkPlayground
             }
             wpfGraphics.Draw();
         }
-
-
 
 
         public event PropertyChangedEventHandler PropertyChanged;

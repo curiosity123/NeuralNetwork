@@ -35,10 +35,6 @@ namespace NeuralNetworkPlayground
             canvasCollection = _canvasCollection;
         }
 
-
-
-
-
         public void SetPixel(int x, int y, byte r, byte g, byte b)
         {
             int xIndex = x * 3;
@@ -52,8 +48,6 @@ namespace NeuralNetworkPlayground
             canvasCollection.Clear();
             pixelData = new byte[rawStride * Height];
         }
-
-
         public void Draw()
         {
             bitmap = BitmapSource.Create(Width, Height, 96, 96, pf, null, pixelData, rawStride);
@@ -64,6 +58,5 @@ namespace NeuralNetworkPlayground
             canvasCollection.Add(img);
 
         }
-
     }
 }
