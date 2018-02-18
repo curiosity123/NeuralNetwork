@@ -128,8 +128,8 @@ namespace NeuralNetworkPlayground
                 Y[i, 0] = -1;
             }
 
-            double[,] X2 = new double[0,0];
-            double[,] Test2 = new double[0, 0];
+            double[,] X2;
+            double[,] Test2;
             NeuralNetworkScratch.Matrix.SplitMatrix(X,out X2,out Test2,0.7);
 
             Layer[] layers = new Layer[]
