@@ -102,7 +102,7 @@ namespace NeuralNetworkScratch
             }
             return matrix;
         }
-        public static void SplitMatrix(ref double[,] rawData, ref double[,] trainingData, ref double[,] testData,double TrainingDataProportion)
+        public static void SplitMatrix(double[,] rawData, ref double[,] trainingData, ref double[,] testData,double TrainingDataProportion)
         {
             int TrainingSize = (int)(rawData.GetLength(0) * TrainingDataProportion);
             int TestSize = rawData.GetLength(0) - TrainingSize;

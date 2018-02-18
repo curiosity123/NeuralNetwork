@@ -130,7 +130,7 @@ namespace NeuralNetworkPlayground
 
             double[,] X2 = new double[0,0];
             double[,] Test2 = new double[0, 0];
-            NeuralNetworkScratch.Matrix.SplitMatrix(ref X,ref X2,ref Test2,0.7);
+            NeuralNetworkScratch.Matrix.SplitMatrix(X,ref X2,ref Test2,0.7);
 
             Layer[] layers = new Layer[]
             {
