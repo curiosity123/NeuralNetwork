@@ -102,23 +102,23 @@ namespace NeuralNetworkScratch
             }
             return matrix;
         }
-        public static void SplitMatrix(double[,] rawData, ref double[,] trainingData, ref double[,] testData,double TrainingDataProportion)
+        public static void SplitMatrix(double[,] rawData, out double[,] trainingData, out double[,] testData, double TrainingDataProportion)
         {
             int TrainingSize = (int)(rawData.GetLength(0) * TrainingDataProportion);
             int TestSize = rawData.GetLength(0) - TrainingSize;
 
             testData = new double[TestSize, rawData.GetLength(1)];
             trainingData = new double[TrainingSize, rawData.GetLength(1)];
-            if(TrainingSize>0 && TestSize>0)
-            for (int i = 0; i < rawData.GetLength(0); i++)
-                for (int j = 0; j < rawData.GetLength(1); j++)
-                {
-                    if (i < TrainingSize)
-                        trainingData[i, j] = rawData[i, j];
-                    else
-                        testData[i - TrainingSize, j] = rawData[i, j];
-                }
-                   
+            if (TrainingSize > 0 && TestSize > 0)
+                for (int i = 0; i < rawData.GetLength(0); i++)
+                    for (int j = 0; j < rawData.GetLength(1); j++)
+                    {
+                        if (i < TrainingSize)
+                            trainingData[i, j] = rawData[i, j];
+                        else
+                            testData[i - TrainingSize, j] = rawData[i, j];
+                    }
+
 
         }
 
