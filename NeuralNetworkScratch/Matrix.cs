@@ -100,78 +100,98 @@ namespace NeuralNetworkScratch
                     matrixY[i, j] = second[j];
                 }
             }
-                return matrix;
-            }
+            return matrix;
+        }
+        public static void SplitMatrix(ref double[,] rawData, ref double[,] trainingData, ref double[,] testData,double TrainingDataProportion)
+        {
+            int TrainingSize = (int)(rawData.GetLength(0) * TrainingDataProportion);
+            int TestSize = rawData.GetLength(0) - TrainingSize;
 
-            public static double[,] AddFeatureBias(double[,] A, double value)
-            {
-                double[,] B = new double[A.GetLength(0), A.GetLength(1) + 1];
+            testData = new double[TestSize, rawData.GetLength(1)];
+            trainingData = new double[TrainingSize, rawData.GetLength(1)];
 
-                for (int i = 0; i < A.GetLength(0); i++)
+            for (int i = 0; i < rawData.GetLength(0); i++)
+                for (int j = 0; j < rawData.GetLength(1); j++)
                 {
-                    for (int j = 0; j < A.GetLength(1); j++)
-                        B[i, j] = A[i, j];
-                    B[i, B.GetLength(1) - 1] = value;
+                    if (i <= TrainingSize)
+                        trainingData[i, j] = rawData[i, j];
+                    else
+                        testData[i - TrainingSize, j] = rawData[i, j];
                 }
-
-                return B;
-            }
-            public static double[,] RemoveFeatureBias(double[,] A)
-            {
-                double[,] B = new double[A.GetLength(0), A.GetLength(1) - 1];
-
-                for (int i = 0; i < A.GetLength(0); i++)
-                {
-                    for (int j = 0; j < A.GetLength(1) - 1; j++)
-                        B[i, j] = A[i, j];
-
-                }
-
-                return B;
-            }
-
-            public static double[,] RemoveWeightBias(double[,] A)
-            {
-                double[,] B = new double[A.GetLength(0) - 1, A.GetLength(1)];
-
-                for (int i = 0; i < A.GetLength(0) - 1; i++)
-                {
-                    for (int j = 0; j < A.GetLength(1); j++)
-                        B[i, j] = A[i, j];
-                }
-
-                return B;
-            }
-            public static double[,] SetFeatureBias(double[,] A, double value)
-            {
-                for (int i = 0; i < A.GetLength(0); i++)
-                    A[i, A.GetLength(1) - 1] = value;
-                return A;
-            }
-            public static double[,] AddWeightBias(double[,] A, double value)
-            {
-                double[,] B = new double[A.GetLength(0) + 1, A.GetLength(1)];
-
-                for (int i = 0; i < A.GetLength(0); i++)
-                    for (int j = 0; j < A.GetLength(1); j++)
-                        B[i, j] = A[i, j];
-
-                for (int i = 0; i < B.GetLength(1); i++)
-                    B[B.GetLength(0) - 1, i] = value;
-
-                return B;
-            }
-
-            public static void Print(double[,] z)
-            {
-                for (int i = 0; i < z.GetLength(0); i++)
-                {
-                    for (int j = 0; j < z.GetLength(1); j++)
-                        Console.Write(Math.Round(z[i, j], 3).ToString() + "\t");
-                    Console.Write("\n");
-                }
-            }
-
+                   
 
         }
+
+
+        public static double[,] AddFeatureBias(double[,] A, double value)
+        {
+            double[,] B = new double[A.GetLength(0), A.GetLength(1) + 1];
+
+            for (int i = 0; i < A.GetLength(0); i++)
+            {
+                for (int j = 0; j < A.GetLength(1); j++)
+                    B[i, j] = A[i, j];
+                B[i, B.GetLength(1) - 1] = value;
+            }
+
+            return B;
+        }
+        public static double[,] RemoveFeatureBias(double[,] A)
+        {
+            double[,] B = new double[A.GetLength(0), A.GetLength(1) - 1];
+
+            for (int i = 0; i < A.GetLength(0); i++)
+            {
+                for (int j = 0; j < A.GetLength(1) - 1; j++)
+                    B[i, j] = A[i, j];
+
+            }
+
+            return B;
+        }
+
+        public static double[,] RemoveWeightBias(double[,] A)
+        {
+            double[,] B = new double[A.GetLength(0) - 1, A.GetLength(1)];
+
+            for (int i = 0; i < A.GetLength(0) - 1; i++)
+            {
+                for (int j = 0; j < A.GetLength(1); j++)
+                    B[i, j] = A[i, j];
+            }
+
+            return B;
+        }
+        public static double[,] SetFeatureBias(double[,] A, double value)
+        {
+            for (int i = 0; i < A.GetLength(0); i++)
+                A[i, A.GetLength(1) - 1] = value;
+            return A;
+        }
+        public static double[,] AddWeightBias(double[,] A, double value)
+        {
+            double[,] B = new double[A.GetLength(0) + 1, A.GetLength(1)];
+
+            for (int i = 0; i < A.GetLength(0); i++)
+                for (int j = 0; j < A.GetLength(1); j++)
+                    B[i, j] = A[i, j];
+
+            for (int i = 0; i < B.GetLength(1); i++)
+                B[B.GetLength(0) - 1, i] = value;
+
+            return B;
+        }
+
+        public static void Print(double[,] z)
+        {
+            for (int i = 0; i < z.GetLength(0); i++)
+            {
+                for (int j = 0; j < z.GetLength(1); j++)
+                    Console.Write(Math.Round(z[i, j], 3).ToString() + "\t");
+                Console.Write("\n");
+            }
+        }
+
+
     }
+}
