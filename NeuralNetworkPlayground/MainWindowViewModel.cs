@@ -128,6 +128,9 @@ namespace NeuralNetworkPlayground
                 Y[i, 0] = -1;
             }
 
+            double[,] X2 = new double[0,0];
+            double[,] Test2 = new double[0, 0];
+            NeuralNetworkScratch.Matrix.SplitMatrix(ref X,ref X2,ref Test2,0.7);
 
             Layer[] layers = new Layer[]
             {
@@ -138,6 +141,7 @@ namespace NeuralNetworkPlayground
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
             nn = new NEngine(layers, Y, 0.1, 0);
+
             NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
         }
 

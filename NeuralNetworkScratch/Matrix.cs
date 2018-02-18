@@ -109,11 +109,11 @@ namespace NeuralNetworkScratch
 
             testData = new double[TestSize, rawData.GetLength(1)];
             trainingData = new double[TrainingSize, rawData.GetLength(1)];
-
+            if(TrainingSize>0 && TestSize>0)
             for (int i = 0; i < rawData.GetLength(0); i++)
                 for (int j = 0; j < rawData.GetLength(1); j++)
                 {
-                    if (i <= TrainingSize)
+                    if (i < TrainingSize)
                         trainingData[i, j] = rawData[i, j];
                     else
                         testData[i - TrainingSize, j] = rawData[i, j];
