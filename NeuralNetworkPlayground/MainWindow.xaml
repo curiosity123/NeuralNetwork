@@ -40,6 +40,7 @@
         <StackPanel Grid.Row="1" Height="30" Background="LightBlue" Orientation="Horizontal">
             <Button x:Name="Clear" Height="30" Command="{Binding ClearCommand}"  >Clear</Button>
             <Button x:Name="Lear" Height="30"  Command="{Binding LearnCommand}"  >Learn</Button>
+            <TextBlock Foreground="Blue" FontSize="18" Text="{Binding Loss}"></TextBlock>
         </StackPanel>
 
     </Grid>

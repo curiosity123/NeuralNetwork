@@ -85,8 +85,23 @@ namespace NeuralNetworkPlayground
             {
                 nn.BackwardPropagation(500);
                 DrawNetworkAnswer();
+                Loss = nn.GetCurrentLoss();
             }
         }
+
+
+        private string  loss;
+
+        public string  Loss
+        {
+            get { return loss; }
+            set
+            {
+                loss = value;
+                RaisePropertyChangedEvent("Loss");
+            }
+        }
+
 
 
         public ICommand ClearCommand { get { return new RelayCommand(x => true, Clear); } }
@@ -135,9 +150,9 @@ namespace NeuralNetworkPlayground
             Layer[] layers = new Layer[]
             {
                 new Layer(LayerType.Input,  X, ActivationFunction.Sigmoid),
+                new Layer(LayerType.Hidden, 7, ActivationFunction.Tanh),
                 new Layer(LayerType.Hidden, 6, ActivationFunction.Tanh),
                 new Layer(LayerType.Hidden, 5, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 4, ActivationFunction.Tanh),
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
             nn = new NEngine(layers, Y, 0.1, 0);

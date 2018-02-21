@@ -209,12 +209,12 @@ namespace NeuralNetworkScratch
             }
         }
 
-        public string GetCurrentLoss(double[,] DataSet, double[,] ExpectedResult)
+        public string GetCurrentLoss()
         {
-            double[,] loss = Matrix.Func(CheckAnswer(DataSet), ExpectedResult, (x,y)=> Math.Abs(x-y));
+            double[,] loss = Matrix.Func(CheckAnswer(Matrix.RemoveFeatureBias(X)), Y, (x,y)=> Math.Abs(x-y));
 
-            double result = Matrix.Sum(loss)/Matrix.Sum(ExpectedResult);
-            return "";
+            double result = Matrix.Sum(loss);///Matrix.Sum(Y);
+            return result.ToString();
         }
 
 
