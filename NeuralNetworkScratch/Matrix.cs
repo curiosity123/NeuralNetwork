@@ -46,7 +46,7 @@ namespace NeuralNetworkScratch
             return Result;
         }
 
-        public static double Sum(double[,] A, double[,] B)
+        public static double Sum(double[,] A)
         {
             int rA = A.GetLength(0);
             int cA = A.GetLength(1);
