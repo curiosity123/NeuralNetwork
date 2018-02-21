@@ -45,6 +45,21 @@ namespace NeuralNetworkScratch
 
             return Result;
         }
+
+        public static double Sum(double[,] A, double[,] B)
+        {
+            int rA = A.GetLength(0);
+            int cA = A.GetLength(1);
+            double sum = 0;
+            double[,] Result = new double[rA, cA];
+
+            for (int i = 0; i < rA; i++)
+                for (int j = 0; j < cA; j++)
+                    sum += A[i, j];
+
+            return sum;
+        }
+
         public static double[,] Mul(double[,] A, double[,] B)
         {
             int rowA = A.GetLength(0);

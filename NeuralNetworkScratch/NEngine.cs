@@ -209,6 +209,13 @@ namespace NeuralNetworkScratch
             }
         }
 
+        public string GetCurrentLoss(double[,] DataSet, double[,] ExpectedResult)
+        {
+            double[,] loss = Matrix.Func(CheckAnswer(DataSet), ExpectedResult, (x,y)=> Math.Abs(x-y));
+
+
+        }
+
 
     }
 }
