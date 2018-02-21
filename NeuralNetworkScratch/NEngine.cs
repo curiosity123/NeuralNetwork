@@ -209,12 +209,20 @@ namespace NeuralNetworkScratch
             }
         }
 
-        public string GetCurrentLoss()
+        public string GetMAELoss()
         {
             double[,] loss = Matrix.Func(CheckAnswer(Matrix.RemoveFeatureBias(X)), Y, (x,y)=> Math.Abs(x-y));
 
             double result = Matrix.Sum(loss);///Matrix.Sum(Y);
-            return result.ToString();
+            return Math.Round(result,4).ToString();
+        }
+
+        public string GetRMSELoss()
+        {
+            double[,] loss = Matrix.Func(CheckAnswer(Matrix.RemoveFeatureBias(X)), Y, (x, y) => Math.Pow(x - y,2));
+
+            double result = Math.Sqrt( Matrix.Sum(loss)/loss.GetLength(0));///Matrix.Sum(Y);
+            return Math.Round(result, 4).ToString();
         }
 
 

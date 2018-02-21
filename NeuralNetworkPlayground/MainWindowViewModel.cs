@@ -85,20 +85,34 @@ namespace NeuralNetworkPlayground
             {
                 nn.BackwardPropagation(500);
                 DrawNetworkAnswer();
-                Loss = nn.GetCurrentLoss();
+                LossMAE ="MAE:"+ nn.GetMAELoss();
+                LossRMSE = "RMSE:" + nn.GetRMSELoss();
             }
         }
 
 
-        private string  loss;
+        private string  lossMAE;
 
-        public string  Loss
+        public string  LossMAE
         {
-            get { return loss; }
+            get { return lossMAE; }
             set
             {
-                loss = value;
-                RaisePropertyChangedEvent("Loss");
+                lossMAE = value;
+                RaisePropertyChangedEvent("LossMAE");
+            }
+        }
+
+
+        private string  lossRMSE;
+
+        public string  LossRMSE
+        {
+            get { return lossRMSE; }
+            set
+            {
+                lossRMSE = value;
+                RaisePropertyChangedEvent("LossRMSE");
             }
         }
 
