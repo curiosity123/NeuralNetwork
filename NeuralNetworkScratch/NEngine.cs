@@ -213,7 +213,7 @@ namespace NeuralNetworkScratch
         {
             double[,] loss = Matrix.Func(CheckAnswer(DataSet), ExpectedResult, (x,y)=> Math.Abs(x-y));
 
-
+            return "";
         }
 
 
