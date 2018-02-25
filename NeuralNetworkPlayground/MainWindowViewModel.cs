@@ -101,7 +101,7 @@ namespace NeuralNetworkPlayground
             while (IsLearning)
                 if (nn != null)
                 {
-                    Console.Beep(3000, 10);
+
                     nn.BackwardPropagation(5000);
                     Application.Current.Dispatcher.Invoke((Action)(() =>
                     {
@@ -109,6 +109,7 @@ namespace NeuralNetworkPlayground
                         LossMAE = "MAE:" + nn.GetMAELoss();
                         LossRMSE = "RMSE:" + nn.GetRMSELoss();
                     }));
+                    Console.Beep(3000, 100);
                 }
         }
 
