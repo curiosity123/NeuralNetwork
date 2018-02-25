@@ -95,21 +95,21 @@ namespace NeuralNetworkPlayground
         }
 
 
-
         private void Learning()
         {
             while (IsLearning)
                 if (nn != null)
                 {
 
-                    nn.BackwardPropagation(5000);
-                    Application.Current.Dispatcher.Invoke((Action)(() =>
+                       nn.BackwardPropagation(1000);
+            
+                        Application.Current.Dispatcher.Invoke((Action)(() =>
                     {
-                        DrawNetworkAnswer();
-                        LossMAE = "MAE:" + nn.GetMAELoss();
-                        LossRMSE = "RMSE:" + nn.GetRMSELoss();
+                          DrawNetworkAnswer();
+                       //   LossMAE = "MAE:" + nn.GetMAELoss();
+                          LossRMSE = "RMSE:" + nn.GetRMSELoss();
                     }));
-                    Console.Beep(3000, 100);
+
                 }
         }
 
@@ -190,9 +190,9 @@ namespace NeuralNetworkPlayground
             Layer[] layers = new Layer[]
             {
                 new Layer(LayerType.Input,  X, ActivationFunction.Sigmoid),
-                new Layer(LayerType.Hidden, 7, ActivationFunction.Tanh),
                 new Layer(LayerType.Hidden, 6, ActivationFunction.Tanh),
                 new Layer(LayerType.Hidden, 5, ActivationFunction.Tanh),
+                new Layer(LayerType.Hidden, 4, ActivationFunction.Tanh),
                 new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
             };
             nn = new NEngine(layers, Y, 0.1, 0);
@@ -208,7 +208,7 @@ namespace NeuralNetworkPlayground
                 {
 
                     double[,] input = new double[,] { { ((double)x / 300), ((double)y / 300) } };
-                    double[,] result = nn.CheckAnswer(input);
+                    double[,] result =  nn.CheckAnswer(input);
 
                     byte color = 0;
                     //if (result[0, 0] >= 0)

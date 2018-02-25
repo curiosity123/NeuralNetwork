@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -99,10 +100,11 @@ namespace NeuralNetworkScratch
 
         public double[,] CheckAnswer(double[,] TX)
         {
+
             double[][,] At = new double[layers.Length - 1][,];
             double[][,] Zt = new double[layers.Length - 1][,];
             double[,] TestedX = Matrix.AddFeatureBias(TX, 1);
-
+     
             for (int i = 1; i < layers.Length; i++)
             {
                 if (i == 1)
@@ -119,7 +121,6 @@ namespace NeuralNetworkScratch
                 }
             }
 
-
             for (int i = 0; i < layers.Length - 1; i++)
             {
                 if (i == 0)
@@ -133,7 +134,6 @@ namespace NeuralNetworkScratch
                     At[i] = Matrix.Func(Zt[i], activationFunc[i]);
                 }
             }
-
             return At[layers.Length - 2];
         }
 
