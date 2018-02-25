@@ -85,15 +85,15 @@ namespace NeuralNetworkPlayground
             {
                 nn.BackwardPropagation(500);
                 DrawNetworkAnswer();
-                LossMAE ="MAE:"+ nn.GetMAELoss();
+                LossMAE = "MAE:" + nn.GetMAELoss();
                 LossRMSE = "RMSE:" + nn.GetRMSELoss();
             }
         }
 
 
-        private string  lossMAE;
+        private string lossMAE;
 
-        public string  LossMAE
+        public string LossMAE
         {
             get { return lossMAE; }
             set
@@ -104,9 +104,9 @@ namespace NeuralNetworkPlayground
         }
 
 
-        private string  lossRMSE;
+        private string lossRMSE;
 
-        public string  LossRMSE
+        public string LossRMSE
         {
             get { return lossRMSE; }
             set
@@ -141,13 +141,14 @@ namespace NeuralNetworkPlayground
             DrawPoints();
 
             double[,] X = new double[BluePoint.Count() + OrangePoint.Count(), 2];
-            double[,] Y = new double[BluePoint.Count() + OrangePoint.Count(), 1];
+            double[,] Y = new double[BluePoint.Count() + OrangePoint.Count(), 2];
 
             for (int i = 0; i < BluePoint.Count(); i++)
             {
                 X[i, 0] = BluePoint[i].X / 300;
                 X[i, 1] = BluePoint[i].Y / 300;
                 Y[i, 0] = 1;
+                Y[i, 1] = -1;
             }
 
             for (int i = BluePoint.Count(); i < BluePoint.Count() + OrangePoint.Count(); i++)
@@ -155,11 +156,12 @@ namespace NeuralNetworkPlayground
                 X[i, 0] = (OrangePoint[i - BluePoint.Count()].X / 300);
                 X[i, 1] = (OrangePoint[i - BluePoint.Count()].Y / 300);
                 Y[i, 0] = -1;
+                Y[i, 1] = 1;
             }
 
             double[,] X2;
             double[,] Test2;
-            NeuralNetworkScratch.Matrix.SplitMatrix(X,out X2,out Test2,0.7);
+            NeuralNetworkScratch.Matrix.SplitMatrix(X, out X2, out Test2, 0.7);
 
             Layer[] layers = new Layer[]
             {
@@ -185,12 +187,20 @@ namespace NeuralNetworkPlayground
                     double[,] result = nn.CheckAnswer(input);
 
                     byte color = 0;
-                    if (result[0, 0] >= 0)
+                    //if (result[0, 0] >= 0)
+                    //    color = (byte)(127 + (byte)(result[0, 0] * 127));
+                    //else
+                    //    color = (byte)(127 + (byte)(result[0, 0] * 127));
+                    if (result[0, 0] > 0)
+                    {
                         color = (byte)(127 + (byte)(result[0, 0] * 127));
+                        wpfGraphics.SetPixel(x, y, 0, color, 0);
+                    }
                     else
-                        color = (byte)(127 + (byte)(result[0, 0] * 127));
-
-                    wpfGraphics.SetPixel(x, y, 0, color, 0);
+                    {
+                        color = (byte)(127 + (byte)(result[0, 1] * 127));
+                        wpfGraphics.SetPixel(x, y, color, color, 0);
+                    }
                 }
 
             DrawPoints();
