@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,7 @@ using System.Windows.Interactivity;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace NeuralNetworkPlayground
 {
@@ -23,6 +25,7 @@ namespace NeuralNetworkPlayground
         WpfGraphics wpfGraphics;
         List<Point> BluePoint = new List<Point>();
         List<Point> OrangePoint = new List<Point>();
+        bool IsLearning = false;
 
         public MainWindowViewModel()
         {
@@ -81,15 +84,33 @@ namespace NeuralNetworkPlayground
         public ICommand LearnCommand { get { return new RelayCommand(x => true, Learn); } }
         private void Learn(object obj)
         {
-            if (nn != null)
-            {
-                nn.BackwardPropagation(500);
-                DrawNetworkAnswer();
-                LossMAE = "MAE:" + nn.GetMAELoss();
-                LossRMSE = "RMSE:" + nn.GetRMSELoss();
-            }
+            IsLearning = true;
+            Task.Factory.StartNew(Learning);
         }
 
+        public ICommand StopLearnCommand { get { return new RelayCommand(x => true, Stop); } }
+        private void Stop(object obj)
+        {
+            IsLearning = false;
+        }
+
+
+
+        private void Learning()
+        {
+            while (IsLearning)
+                if (nn != null)
+                {
+                    Console.Beep(3000, 10);
+                    nn.BackwardPropagation(5000);
+                    Application.Current.Dispatcher.Invoke((Action)(() =>
+                    {
+                        DrawNetworkAnswer();
+                        LossMAE = "MAE:" + nn.GetMAELoss();
+                        LossRMSE = "RMSE:" + nn.GetRMSELoss();
+                    }));
+                }
+        }
 
         private string lossMAE;
 
@@ -121,6 +142,7 @@ namespace NeuralNetworkPlayground
         public ICommand ClearCommand { get { return new RelayCommand(x => true, Clear); } }
         private void Clear(object obj)
         {
+            IsLearning = false;
             wpfGraphics.Clear();
             BluePoint.Clear();
             OrangePoint.Clear();
@@ -130,6 +152,7 @@ namespace NeuralNetworkPlayground
 
         private void AddNewPoint(MouseButton mb)
         {
+            IsLearning = false;
             Point p = new Point(PanelX, PanelY);
             if (mb == MouseButton.Left)
                 BluePoint.Add(p);
