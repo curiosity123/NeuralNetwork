@@ -19,6 +19,10 @@
             <RowDefinition Height="300"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"></ColumnDefinition>
+            <ColumnDefinition Width="300"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
         <Border BorderBrush="Black" BorderThickness="2">
             <ItemsControl x:Name="canvas" Grid.Row="0" Height="300" Width="300" Background="Black" ItemsSource="{Binding CanvasCollection}" >
                 <i:Interaction.Behaviors>
