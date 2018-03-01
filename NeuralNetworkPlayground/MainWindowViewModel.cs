@@ -106,22 +106,22 @@ namespace NeuralNetworkPlayground
                         Application.Current.Dispatcher.Invoke((Action)(() =>
                     {
                           DrawNetworkAnswer();
-                       //   LossMAE = "MAE:" + nn.GetMAELoss();
-                          LossRMSE = "RMSE:" + nn.GetRMSELoss();
+                        //  LossRMSE = "RMSE:" + nn.GetRMSELoss(X2);
+                       //   LossRMSE = "RMSE Test:" + nn.GetRMSELoss(Test2);
                     }));
 
                 }
         }
 
-        private string lossMAE;
+        private string lossRMSETest;
 
-        public string LossMAE
+        public string LossRMSETest
         {
-            get { return lossMAE; }
+            get { return lossRMSETest; }
             set
             {
-                lossMAE = value;
-                RaisePropertyChangedEvent("LossMAE");
+                lossRMSETest = value;
+                RaisePropertyChangedEvent("LossRMSETest");
             }
         }
 
@@ -150,7 +150,9 @@ namespace NeuralNetworkPlayground
 
         }
 
-
+        double[,] X2;
+        double[,] Test2;
+        
         private void AddNewPoint(MouseButton mb)
         {
             IsLearning = false;
@@ -183,9 +185,8 @@ namespace NeuralNetworkPlayground
                 Y[i, 1] = 1;
             }
 
-            double[,] X2;
-            double[,] Test2;
-            NeuralNetworkScratch.Matrix.SplitMatrix(X, out X2, out Test2, 1);
+
+            NeuralNetworkScratch.Matrix.SplitMatrix(X, out X2, out Test2, 0.7);
 
             Layer[] layers = new Layer[]
             {

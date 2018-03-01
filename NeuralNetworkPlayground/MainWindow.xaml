@@ -41,7 +41,7 @@
             <Button x:Name="Clear" Height="30" Command="{Binding ClearCommand}"  >Clear</Button>
             <Button x:Name="Lear" Height="30"  Command="{Binding LearnCommand}"  >Start learning</Button>
             <Button x:Name="StopLearn" Height="30"  Command="{Binding StopLearnCommand}"  >Stop learning</Button>
-            <TextBlock Foreground="Blue" FontSize="16" Margin="5,0" Text="{Binding LossMAE}"></TextBlock>
+            <TextBlock Foreground="Red" FontSize="16" Margin="5,0" Text="{Binding LossRMSETest}"></TextBlock>
             <TextBlock Foreground="Blue" FontSize="16" Margin="5,0" Text="{Binding LossRMSE}"></TextBlock>
         </StackPanel>
 
