@@ -101,14 +101,14 @@ namespace NeuralNetworkPlayground
                 if (nn != null)
                 {
 
-                       nn.BackwardPropagation(1000);
-            
-                        Application.Current.Dispatcher.Invoke((Action)(() =>
-                    {
-                          DrawNetworkAnswer();
-                        //  LossRMSE = "RMSE:" + nn.GetRMSELoss(X2);
-                       //   LossRMSE = "RMSE Test:" + nn.GetRMSELoss(Test2);
-                    }));
+                    nn.BackwardPropagation(1000);
+
+                    Application.Current.Dispatcher.Invoke((Action)(() =>
+                {
+                    DrawNetworkAnswer();
+                    LossRMSE = "RMSE:" + nn.GetRMSELoss(X2,Y2);
+                    LossRMSETest = "RMSE Test:" + nn.GetRMSELoss(TestX,TestY);
+                }));
 
                 }
         }
@@ -151,8 +151,10 @@ namespace NeuralNetworkPlayground
         }
 
         double[,] X2;
-        double[,] Test2;
-        
+        double[,] TestX;
+        double[,] Y2;
+        double[,] TestY;
+
         private void AddNewPoint(MouseButton mb)
         {
             IsLearning = false;
@@ -184,19 +186,21 @@ namespace NeuralNetworkPlayground
                 Y[i, 0] = -1;
                 Y[i, 1] = 1;
             }
+            NeuralNetworkScratch.Matrix.Unsort(ref X, ref Y,new Random());
 
+            NeuralNetworkScratch.Matrix.SplitMatrix(X, out X2, out TestX, 0.5);
+            NeuralNetworkScratch.Matrix.SplitMatrix(Y, out Y2, out TestY, 0.5);
 
-            NeuralNetworkScratch.Matrix.SplitMatrix(X, out X2, out Test2, 0.7);
 
             Layer[] layers = new Layer[]
             {
-                new Layer(LayerType.Input,  X, ActivationFunction.Sigmoid),
+                new Layer(LayerType.Input,  X2, ActivationFunction.Sigmoid),
                 new Layer(LayerType.Hidden, 6, ActivationFunction.Tanh),
                 new Layer(LayerType.Hidden, 5, ActivationFunction.Tanh),
                 new Layer(LayerType.Hidden, 4, ActivationFunction.Tanh),
-                new Layer(LayerType.Output, Y, ActivationFunction.Tanh)
+                new Layer(LayerType.Output, Y2, ActivationFunction.Tanh)
             };
-            nn = new NEngine(layers, Y, 0.1, 0);
+            nn = new NEngine(layers, Y2, 0.1, 0);
 
             NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
         }
@@ -209,7 +213,7 @@ namespace NeuralNetworkPlayground
                 {
 
                     double[,] input = new double[,] { { ((double)x / 300), ((double)y / 300) } };
-                    double[,] result =  nn.CheckAnswer(input);
+                    double[,] result = nn.CheckAnswer(input);
 
                     byte color = 0;
                     //if (result[0, 0] >= 0)

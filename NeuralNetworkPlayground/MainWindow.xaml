@@ -37,7 +37,7 @@
 
             </ItemsControl>
         </Border>
-        <StackPanel Grid.Row="0" Grid.Column="1" Height="30" Background="LightBlue" Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Grid.Column="1" Height="200" Background="LightBlue" Orientation="Vertical">
             <Button x:Name="Clear" Height="30" Command="{Binding ClearCommand}"  >Clear</Button>
             <Button x:Name="Lear" Height="30"  Command="{Binding LearnCommand}"  >Start learning</Button>
             <Button x:Name="StopLearn" Height="30"  Command="{Binding StopLearnCommand}"  >Stop learning</Button>

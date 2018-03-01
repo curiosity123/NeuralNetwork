@@ -217,9 +217,9 @@ namespace NeuralNetworkScratch
             return Math.Round(result,4).ToString();
         }
 
-        public string GetRMSELoss(double[,] data)
+        public string GetRMSELoss(double[,] data, double[,] newY)
         {
-            double[,] loss = Matrix.Func(CheckAnswer(data), Y, (x, y) => Math.Pow(x - y,2));
+            double[,] loss = Matrix.Func(CheckAnswer(data), newY, (x, y) => Math.Pow(x - y,2));
 
             double result = Math.Sqrt( Matrix.Sum(loss)/loss.GetLength(0));///Matrix.Sum(Y);
             return Math.Round(result, 4).ToString();
