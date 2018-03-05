@@ -43,6 +43,16 @@
             <Button x:Name="StopLearn" Height="30"  Command="{Binding StopLearnCommand}"  >Stop learning</Button>
             <TextBlock Foreground="Red" FontSize="16" Margin="5,0" Text="{Binding LossRMSETest}"></TextBlock>
             <TextBlock Foreground="Blue" FontSize="16" Margin="5,0" Text="{Binding LossRMSE}"></TextBlock>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock  FontSize="16" Margin="5,5" >Topology (first hidden layer; second;and soo on) </TextBlock>
+                <TextBox x:Name="topo" Width="60" Height="30" VerticalContentAlignment="Center" Text="{Binding Topology, Mode=TwoWay}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="TextChanged">
+                            <i:InvokeCommandAction Command="{Binding TopologyChangedCommand}" CommandParameter="{Binding ElementName=topo, Path=Text}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+            </StackPanel>
         </StackPanel>
 
     </Grid>

@@ -30,6 +30,8 @@ namespace NeuralNetworkPlayground
         public MainWindowViewModel()
         {
             wpfGraphics = new WpfGraphics(CanvasCollection);
+            Topology = "6;5;4";
+            ParseLayers(Topology);
         }
 
         private double _panelX;
@@ -106,14 +108,14 @@ namespace NeuralNetworkPlayground
                     Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
                     DrawNetworkAnswer();
-                    LossRMSE = "RMSE:" + nn.GetRMSELoss(X2,Y2);
-                    LossRMSETest = "RMSE Test:" + nn.GetRMSELoss(TestX,TestY);
+                    LossRMSE = "RMSE:" + nn.GetRMSELoss(X2, Y2);
+                    LossRMSETest = "RMSE Test:" + nn.GetRMSELoss(TestX, TestY);
                 }));
 
                 }
         }
 
-        private string lossRMSETest;
+        private string lossRMSETest = "RMSE Test: 0";
 
         public string LossRMSETest
         {
@@ -126,7 +128,7 @@ namespace NeuralNetworkPlayground
         }
 
 
-        private string lossRMSE;
+        private string lossRMSE = "RMSE: 0";
 
         public string LossRMSE
         {
@@ -138,7 +140,40 @@ namespace NeuralNetworkPlayground
             }
         }
 
+        private string topology;
 
+        public string Topology
+        {
+            get { return topology; }
+            set
+            {
+                topology = value;
+                RaisePropertyChangedEvent("Topology");
+            }
+        }
+
+        public ICommand TopologyChangedCommand { get { return new RelayCommand(x => true, TopologyChanged); } }
+        private void TopologyChanged(object obj)
+        {
+            ParseLayers(obj);
+        }
+
+        private void ParseLayers(object obj)
+        {
+            string[] layers = (obj as string).Split(';');
+            HiddenLayers = new List<Layer>();
+
+            int value = 0;
+            foreach (string s in layers)
+                if (int.TryParse(s, out value) && value > 0)
+                    HiddenLayers.Add(new Layer(LayerType.Hidden, value, ActivationFunction.Tanh));
+
+            if (HiddenLayers.Count < 1)
+            {
+                Topology = "4;3";
+                ParseLayers(Topology);
+            }
+        }
 
         public ICommand ClearCommand { get { return new RelayCommand(x => true, Clear); } }
         private void Clear(object obj)
@@ -154,6 +189,8 @@ namespace NeuralNetworkPlayground
         double[,] TestX;
         double[,] Y2;
         double[,] TestY;
+        List<Layer> HiddenLayers;
+
 
         private void AddNewPoint(MouseButton mb)
         {
@@ -186,20 +223,27 @@ namespace NeuralNetworkPlayground
                 Y[i, 0] = -1;
                 Y[i, 1] = 1;
             }
-            NeuralNetworkScratch.Matrix.Unsort(ref X, ref Y,new Random());
+            NeuralNetworkScratch.Matrix.Unsort(ref X, ref Y, new Random());
 
-            NeuralNetworkScratch.Matrix.SplitMatrix(X, out X2, out TestX, 0.5);
-            NeuralNetworkScratch.Matrix.SplitMatrix(Y, out Y2, out TestY, 0.5);
+            NeuralNetworkScratch.Matrix.SplitMatrix(X, out X2, out TestX, 0.8);
+            NeuralNetworkScratch.Matrix.SplitMatrix(Y, out Y2, out TestY, 0.8);
 
 
-            Layer[] layers = new Layer[]
-            {
-                new Layer(LayerType.Input,  X2, ActivationFunction.Sigmoid),
-                new Layer(LayerType.Hidden, 6, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 5, ActivationFunction.Tanh),
-                new Layer(LayerType.Hidden, 4, ActivationFunction.Tanh),
-                new Layer(LayerType.Output, Y2, ActivationFunction.Tanh)
-            };
+            Layer[] layers = new Layer[2 + HiddenLayers.Count()];
+
+            layers[0] = new Layer(LayerType.Input, X2, ActivationFunction.Tanh);
+
+            for (int i=1;i< HiddenLayers.Count()+1;i++)
+                layers[i] = HiddenLayers[i-1];
+
+            layers[layers.Count() - 1] = new Layer(LayerType.Output, Y2, ActivationFunction.Tanh);
+           
+
+
+
+
+
+
             nn = new NEngine(layers, Y2, 0.1, 0);
 
             NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
