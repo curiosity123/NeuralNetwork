@@ -37,7 +37,7 @@
 
             </ItemsControl>
         </Border>
-        <StackPanel Grid.Row="0" Grid.Column="1" Height="200" Background="LightBlue" Orientation="Vertical">
+        <StackPanel Grid.Row="0" Grid.Column="1" Height="300" Background="LightBlue" Orientation="Vertical">
             <Button x:Name="Clear" Height="30" Command="{Binding ClearCommand}"  >Clear</Button>
             <Button x:Name="Lear" Height="30"  Command="{Binding LearnCommand}"  >Start learning</Button>
             <Button x:Name="StopLearn" Height="30"  Command="{Binding StopLearnCommand}"  >Stop learning</Button>
@@ -53,6 +53,18 @@
                     </i:Interaction.Triggers>
                 </TextBox>
             </StackPanel>
+            <StackPanel Orientation="Horizontal" Height="30">
+                <TextBlock  FontSize="16" Margin="5,5" >Learning rate</TextBlock>
+                <Slider x:Name="alpha" Minimum="0.01" VerticalAlignment="Center" Maximum="1" Width="100" Value="{Binding LearningRate}"></Slider>
+                <TextBlock  FontSize="16" Margin="5,5"  Text="{Binding ElementName=alpha,  Path=Value}" ></TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Height="30">
+                <TextBlock  FontSize="16" Margin="5,5" >Learn to test ratio</TextBlock>
+                <Slider x:Name="tests" Minimum="0.01" Maximum="1"  Width="100" Value="{Binding LearnToTest}"></Slider>
+                <TextBlock  FontSize="16" Margin="5,5"  VerticalAlignment="Center" Text="{Binding ElementName=tests,  Path=Value}" ></TextBlock>
+            </StackPanel>
+
+            
         </StackPanel>
 
     </Grid>

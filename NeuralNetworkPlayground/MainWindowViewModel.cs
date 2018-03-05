@@ -31,7 +31,7 @@ namespace NeuralNetworkPlayground
         {
             wpfGraphics = new WpfGraphics(CanvasCollection);
             Topology = "6;5;4";
-            ParseLayers(Topology);
+            LayersParser(Topology);
         }
 
         private double _panelX;
@@ -152,13 +152,37 @@ namespace NeuralNetworkPlayground
             }
         }
 
+
+        private double learningRate =0.1;
+
+        public double LearningRate
+        {
+            get { return learningRate; }
+            set { learningRate = value;
+                RaisePropertyChangedEvent("LearningRate");
+            }
+        }
+
+        private double learnToTest=0.8;
+
+        public double LearnToTest
+        {
+            get { return learnToTest; }
+            set
+            {
+                learnToTest = value;
+                RaisePropertyChangedEvent("LearnToTest");
+            }
+        }
+
+
         public ICommand TopologyChangedCommand { get { return new RelayCommand(x => true, TopologyChanged); } }
         private void TopologyChanged(object obj)
         {
-            ParseLayers(obj);
+            LayersParser(obj);
         }
 
-        private void ParseLayers(object obj)
+        private void LayersParser(object obj)
         {
             string[] layers = (obj as string).Split(';');
             HiddenLayers = new List<Layer>();
@@ -171,7 +195,7 @@ namespace NeuralNetworkPlayground
             if (HiddenLayers.Count < 1)
             {
                 Topology = "4;3";
-                ParseLayers(Topology);
+                LayersParser(Topology);
             }
         }
 
@@ -225,26 +249,20 @@ namespace NeuralNetworkPlayground
             }
             NeuralNetworkScratch.Matrix.Unsort(ref X, ref Y, new Random());
 
-            NeuralNetworkScratch.Matrix.SplitMatrix(X, out X2, out TestX, 0.8);
-            NeuralNetworkScratch.Matrix.SplitMatrix(Y, out Y2, out TestY, 0.8);
+            NeuralNetworkScratch.Matrix.SplitMatrix(X, out X2, out TestX, LearnToTest);
+            NeuralNetworkScratch.Matrix.SplitMatrix(Y, out Y2, out TestY, LearnToTest);
 
 
             Layer[] layers = new Layer[2 + HiddenLayers.Count()];
 
             layers[0] = new Layer(LayerType.Input, X2, ActivationFunction.Tanh);
 
-            for (int i=1;i< HiddenLayers.Count()+1;i++)
-                layers[i] = HiddenLayers[i-1];
+            for (int i = 1; i < HiddenLayers.Count() + 1; i++)
+                layers[i] = HiddenLayers[i - 1];
 
             layers[layers.Count() - 1] = new Layer(LayerType.Output, Y2, ActivationFunction.Tanh);
-           
 
-
-
-
-
-
-            nn = new NEngine(layers, Y2, 0.1, 0);
+            nn = new NEngine(layers, Y2,LearningRate, 0);
 
             NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
         }
