@@ -8,64 +8,62 @@
         mc:Ignorable="d"
         Title="MainWindow"  SizeToContent="WidthAndHeight">
 
-    <Window.DataContext >
-        <local:MainWindowViewModel x:Name="context"/>
-    </Window.DataContext>
 
 
-
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300"></ColumnDefinition>
-            <ColumnDefinition Width="400"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Border BorderBrush="Black" BorderThickness="2">
-            <ItemsControl x:Name="canvas" Grid.Row="0" Height="300" Width="300" Background="Black" ItemsSource="{Binding CanvasCollection}" >
-                <i:Interaction.Behaviors>
-                    <local:MouseBehaviour MouseX="{Binding PanelX, Mode=OneWayToSource}" 
+    <TabControl>
+        <TabItem Header="Playground">
+            <Grid>
+                <Grid.DataContext >
+                    <local:MainWindowViewModel x:Name="context"/>
+                </Grid.DataContext>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"></ColumnDefinition>
+                    <ColumnDefinition Width="400"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Border BorderBrush="Black" BorderThickness="2">
+                    <ItemsControl x:Name="canvas" Grid.Row="0" Height="300" Width="300" Background="Black" ItemsSource="{Binding CanvasCollection}" >
+                        <i:Interaction.Behaviors>
+                            <local:MouseBehaviour MouseX="{Binding PanelX, Mode=OneWayToSource}" 
                                           MouseY="{Binding PanelY, Mode=OneWayToSource}" />
-                </i:Interaction.Behaviors>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                        <i:InvokeCommandAction Command="{Binding MouseLeftCommand}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="PreviewMouseRightButtonDown">
-                        <i:InvokeCommandAction Command="{Binding MouseRightCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-
-
-            </ItemsControl>
-        </Border>
-        <StackPanel Grid.Row="0" Grid.Column="1" Height="300" Background="LightBlue" Orientation="Vertical">
-            <Button x:Name="Clear" Height="30" Command="{Binding ClearCommand}"  >Clear</Button>
-            <Button x:Name="Lear" Height="30"  Command="{Binding LearnCommand}"  >Start learning</Button>
-            <Button x:Name="StopLearn" Height="30"  Command="{Binding StopLearnCommand}"  >Stop learning</Button>
-            <TextBlock Foreground="Red" FontSize="16" Margin="5,0" Text="{Binding LossRMSETest}"></TextBlock>
-            <TextBlock Foreground="Blue" FontSize="16" Margin="5,0" Text="{Binding LossRMSE}"></TextBlock>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock  FontSize="16" Margin="5,5" >Topology (first hidden layer; second;and soo on) </TextBlock>
-                <TextBox x:Name="topo" Width="60" Height="30" VerticalContentAlignment="Center" Text="{Binding Topology, Mode=TwoWay}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="TextChanged">
-                            <i:InvokeCommandAction Command="{Binding TopologyChangedCommand}" CommandParameter="{Binding ElementName=topo, Path=Text}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </TextBox>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Height="30">
-                <TextBlock  FontSize="16" Margin="5,5" >Learning rate</TextBlock>
-                <Slider x:Name="alpha" Minimum="0.01" VerticalAlignment="Center" Maximum="1" Width="100" Value="{Binding LearningRate}"></Slider>
-                <TextBlock  FontSize="16" Margin="5,5"  Text="{Binding ElementName=alpha,  Path=Value}" ></TextBlock>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Height="30">
-                <TextBlock  FontSize="16" Margin="5,5" >Learn to test ratio</TextBlock>
-                <Slider x:Name="tests" Minimum="0.01" Maximum="1"  Width="100" Value="{Binding LearnToTest}"></Slider>
-                <TextBlock  FontSize="16" Margin="5,5"  VerticalAlignment="Center" Text="{Binding ElementName=tests,  Path=Value}" ></TextBlock>
-            </StackPanel>
-
-            
-        </StackPanel>
-
-    </Grid>
+                        </i:Interaction.Behaviors>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding MouseLeftCommand}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                <i:InvokeCommandAction Command="{Binding MouseRightCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ItemsControl>
+                </Border>
+                <StackPanel Grid.Row="0" Grid.Column="1" Height="300" Background="LightBlue" Orientation="Vertical">
+                    <Button x:Name="Clear" Height="30" Command="{Binding ClearCommand}"  >Clear</Button>
+                    <Button x:Name="Lear" Height="30"  Command="{Binding LearnCommand}"  >Start learning</Button>
+                    <Button x:Name="StopLearn" Height="30"  Command="{Binding StopLearnCommand}"  >Stop learning</Button>
+                    <TextBlock Foreground="Red" FontSize="16" Margin="5,0" Text="{Binding LossRMSETest}"></TextBlock>
+                    <TextBlock Foreground="Blue" FontSize="16" Margin="5,0" Text="{Binding LossRMSE}"></TextBlock>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock  FontSize="16" Margin="5,5" >Topology (first hidden layer; second;and soo on)</TextBlock>
+                        <TextBox x:Name="topo" Width="60" Height="30" VerticalContentAlignment="Center" Text="{Binding Topology, Mode=TwoWay}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="TextChanged">
+                                    <i:InvokeCommandAction Command="{Binding TopologyChangedCommand}" CommandParameter="{Binding ElementName=topo, Path=Text}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Height="30">
+                        <TextBlock  FontSize="16" Margin="5,5" >Learning rate</TextBlock>
+                        <Slider x:Name="alpha" Minimum="0.01" VerticalAlignment="Center" Maximum="1" Width="100" Value="{Binding LearningRate}"></Slider>
+                        <TextBlock  FontSize="16" Margin="5,5"  Text="{Binding ElementName=alpha,  Path=Value}" ></TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Height="30">
+                        <TextBlock  FontSize="16" Margin="5,5" >Learn to test ratio</TextBlock>
+                        <Slider x:Name="tests" Minimum="0.01" Maximum="1"  Width="100" Value="{Binding LearnToTest}"></Slider>
+                        <TextBlock  FontSize="16" Margin="5,5"  VerticalAlignment="Center" Text="{Binding ElementName=tests,  Path=Value}" ></TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+    </TabControl>
 </Window>
