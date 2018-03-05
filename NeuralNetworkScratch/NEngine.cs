@@ -167,7 +167,7 @@ namespace NeuralNetworkScratch
             }
         }
 
-        public void GradientFunction()
+        private void GradientFunction()
         {
             for (int i = layers.Length - 1; i > 0; i--)
             {
@@ -201,7 +201,7 @@ namespace NeuralNetworkScratch
 
         }
 
-        public void UpdateWeight()
+        private void UpdateWeight()
         {
             for (int i = 0; i < W.Length; i++)
             {
