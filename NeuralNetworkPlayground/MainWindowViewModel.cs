@@ -12,7 +12,7 @@ using System.Windows.Interactivity;
 
 namespace NeuralNetworkPlayground
 {
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class PixelsViewModel : INotifyPropertyChanged
     {
 
         NEngine nn;
@@ -21,7 +21,7 @@ namespace NeuralNetworkPlayground
         List<Point> OrangePoint = new List<Point>();
         bool IsLearning = false;
 
-        public MainWindowViewModel()
+        public PixelsViewModel()
         {
             wpfGraphics = new WpfGraphics(CanvasCollection);
             Topology = "6;5;4";

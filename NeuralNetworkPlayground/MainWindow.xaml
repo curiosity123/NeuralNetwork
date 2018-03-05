@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NeuralNetworkPlayground"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
-        Title="MainWindow"  SizeToContent="WidthAndHeight">
+        Title="Neural network playground"  SizeToContent="WidthAndHeight">
 
 
 
@@ -14,7 +14,7 @@
         <TabItem Header="Pixels">
             <Grid>
                 <Grid.DataContext >
-                    <local:MainWindowViewModel x:Name="context"/>
+                    <local:PixelsViewModel x:Name="context"/>
                 </Grid.DataContext>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300"></ColumnDefinition>
