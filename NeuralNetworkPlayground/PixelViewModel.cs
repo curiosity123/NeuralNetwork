@@ -100,7 +100,7 @@ namespace NeuralNetworkPlayground
             while (IsLearningRightNow)
                 if (nn != null)
                 {
-                    nn.BackwardPropagation(100);
+                    nn.BackwardPropagation(1000);
 
                     Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
