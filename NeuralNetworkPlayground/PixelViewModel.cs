@@ -19,7 +19,7 @@ namespace NeuralNetworkPlayground
         WpfGraphics wpfGraphics;
         List<Point> BluePoint = new List<Point>();
         List<Point> OrangePoint = new List<Point>();
-        bool IsLearning = false;
+        bool IsLearningRightNow = false;
 
         public PixelsViewModel()
         {
@@ -53,7 +53,6 @@ namespace NeuralNetworkPlayground
             }
         }
 
-
         private ObservableCollection<UIElement> canvasCollection = new ObservableCollection<UIElement>();
 
         public ObservableCollection<UIElement> CanvasCollection
@@ -80,20 +79,25 @@ namespace NeuralNetworkPlayground
         public ICommand LearnCommand { get { return new RelayCommand(x => true, Learn); } }
         private void Learn(object obj)
         {
-            IsLearning = true;
-            Task.Factory.StartNew(Learning);
+            LearningCommandManager();
         }
 
-        public ICommand StopLearnCommand { get { return new RelayCommand(x => true, Stop); } }
-        private void Stop(object obj)
+        private void LearningCommandManager()
         {
-            IsLearning = false;
+            if (!IsLearningRightNow)
+            {
+                IsLearningRightNow = true;
+                Task.Factory.StartNew(Learning);
+            }
+            else
+            {
+                IsLearningRightNow = false;
+            }
         }
-
 
         private void Learning()
         {
-            while (IsLearning)
+            while (IsLearningRightNow)
                 if (nn != null)
                 {
 
@@ -104,10 +108,26 @@ namespace NeuralNetworkPlayground
                     DrawNetworkAnswer();
                     LossRMSE = "RMSE:" + nn.GetRMSELoss(X2, Y2);
                     LossRMSETest = "RMSE Test:" + nn.GetRMSELoss(TestX, TestY);
+                    ButtonLearnTitle = "Stop learning process";
                 }));
 
                 }
+            ButtonLearnTitle = "Start learning process";
         }
+
+        private string buttonLearnTitle = "Start learning process";
+
+        public string ButtonLearnTitle
+        {
+            get { return buttonLearnTitle; }
+            set
+            {
+                buttonLearnTitle = value;
+                RaisePropertyChangedEvent("ButtonLearnTitle");
+            }
+        }
+
+
 
         private string lossRMSETest = "RMSE Test: 0";
 
@@ -147,17 +167,19 @@ namespace NeuralNetworkPlayground
         }
 
 
-        private double learningRate =0.1;
+        private double learningRate = 0.1;
 
         public double LearningRate
         {
             get { return learningRate; }
-            set { learningRate = value;
+            set
+            {
+                learningRate = value;
                 RaisePropertyChangedEvent("LearningRate");
             }
         }
 
-        private double learnToTest=0.8;
+        private double learnToTest = 0.8;
 
         public double LearnToTest
         {
@@ -196,7 +218,7 @@ namespace NeuralNetworkPlayground
         public ICommand ClearCommand { get { return new RelayCommand(x => true, Clear); } }
         private void Clear(object obj)
         {
-            IsLearning = false;
+            IsLearningRightNow = false;
             wpfGraphics.Clear();
             BluePoint.Clear();
             OrangePoint.Clear();
@@ -212,7 +234,7 @@ namespace NeuralNetworkPlayground
 
         private void AddNewPoint(MouseButton mb)
         {
-            IsLearning = false;
+            IsLearningRightNow = false;
             Point p = new Point(PanelX, PanelY);
             if (mb == MouseButton.Left)
                 BluePoint.Add(p);
@@ -256,7 +278,7 @@ namespace NeuralNetworkPlayground
 
             layers[layers.Count() - 1] = new Layer(LayerType.Output, Y2, ActivationFunction.Tanh);
 
-            nn = new NEngine(layers, Y2,LearningRate, 0);
+            nn = new NEngine(layers, Y2, LearningRate, 0);
 
             NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
         }
