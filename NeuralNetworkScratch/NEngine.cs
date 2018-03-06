@@ -203,10 +203,10 @@ namespace NeuralNetworkScratch
 
         private void UpdateWeight()
         {
-            for (int i = 0; i < W.Length; i++)
+            Parallel.For(0, W.Length, i =>
             {
                 W[i] = Matrix.Func(W[i], Matrix.Func(Gradient[i], (x) => (_learningRate / (double)X.GetLength(0)) * x), (x, y) => x - y);
-            }
+            });
         }
 
         public string GetMAELoss()
