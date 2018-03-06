@@ -99,7 +99,48 @@
             </Grid>
         </TabItem>
         <TabItem Header="Image learning">
-
+            <Grid >
+                <Grid.DataContext >
+                    <local:ImageLearningViewModel x:Name="context2"/>
+                </Grid.DataContext>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="220"></ColumnDefinition>
+                    <ColumnDefinition Width="300"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <StackPanel  Margin="10" Orientation="Horizontal" Height="100">
+                    <Image Grid.Row="0" Height="100" Width="100"  HorizontalAlignment="Left"  VerticalAlignment="Top" Source="{Binding TestBitmap}"></Image>
+                    <ItemsControl  Grid.Row="0" Height="100" Width="100" Background="Black"  HorizontalAlignment="Right" ItemsSource="{Binding CanvasCollection2}" ></ItemsControl>
+                 </StackPanel>
+                <StackPanel Grid.Row="0" Grid.Column="1" Height="300"  Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0">
+                        <Button  Width="130" Command="{Binding LearnCommand}" Content="{Binding ButtonLearnTitle}" ></Button>
+                        <Button  Width="130"  Command="{Binding ClearCommand}"  >Clear network</Button>
+                    </StackPanel>
+                    <DockPanel LastChildFill="True" Margin="10,20,10,10">
+                        <TextBlock  FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center" >Topology (e.g."8;5")</TextBlock>
+                        <TextBox x:Name="topo2" Width="auto" Height="30" Margin="5,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding Topology, Mode=TwoWay}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="TextChanged">
+                                    <i:InvokeCommandAction Command="{Binding TopologyChangedCommand}" CommandParameter="{Binding ElementName=topo2, Path=Text}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBox>
+                    </DockPanel>
+                    <DockPanel LastChildFill="True" Height="30" Margin="10,0" >
+                        <TextBlock  FontSize="16" Margin="0" VerticalAlignment="Center" >Learning rate</TextBlock>
+                        <Slider x:Name="alpha2" Minimum="0.01" Margin="55,0,0,0" VerticalAlignment="Center" Maximum="1" Width="90" Value="{Binding LearningRate}"></Slider>
+                        <TextBlock  FontSize="16"  VerticalAlignment="Center" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="{Binding ElementName=alpha2,  Path=Value}" ></TextBlock>
+                    </DockPanel>
+                    <DockPanel LastChildFill="True" Height="30" Margin=" 10,10">
+                        <TextBlock  FontSize="16" Margin="0,5" >Learn to test ratio</TextBlock>
+                        <Slider x:Name="tests2" Margin="23,0,0,0" VerticalAlignment="Center" Maximum="1" Width="90" Value="{Binding LearnToTest}"></Slider>
+                        <TextBlock  FontSize="16"  VerticalAlignment="Center" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="{Binding ElementName=tests2,  Path=Value}" ></TextBlock>
+                    </DockPanel>
+                    <TextBlock Foreground="Red" FontSize="16" Margin="10,10" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="{Binding LossRMSETest}"></TextBlock>
+                    <TextBlock Foreground="Blue" FontSize="16" Margin="10,10" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="{Binding LossRMSE}"></TextBlock>
+                    <Button  Width="130" Command="{Binding OpenCommand}" HorizontalAlignment="Left" Content="Open image" ></Button>
+                </StackPanel>
+            </Grid>
         </TabItem>
     </TabControl>
 </Window>
