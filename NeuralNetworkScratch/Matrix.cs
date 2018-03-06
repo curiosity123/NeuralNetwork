@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NeuralNetworkScratch
@@ -66,20 +67,13 @@ namespace NeuralNetworkScratch
             int columnA = A.GetLength(1);
             int rowB = B.GetLength(0);
             int columnB = B.GetLength(1);
-            double temp = 0;
             double[,] ResultMatrix = new double[rowA, columnB];
 
             for (int i = 0; i < rowA; i++)
-            {
                 for (int j = 0; j < columnB; j++)
-                {
-                    temp = 0;
                     for (int k = 0; k < columnA; k++)
-                        temp += A[i, k] * B[k, j];
-
-                    ResultMatrix[i, j] = temp;
-                }
-            }
+                        ResultMatrix[i, j] += A[i, k] * B[k, j]; 
+            
             return ResultMatrix;
         }
         public static double[,] Rand(double[,] matrix, Random r)

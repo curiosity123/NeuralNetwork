@@ -101,7 +101,7 @@ namespace NeuralNetworkPlayground
                 if (nn != null)
                 {
 
-                    nn.BackwardPropagation(1000);
+                    nn.BackwardPropagation(100);
 
                     Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
@@ -286,9 +286,10 @@ namespace NeuralNetworkPlayground
         private void DrawNetworkAnswer()
         {
             wpfGraphics.Clear();
-            for (int x = 0; x < 300; x++)
-                for (int y = 0; y < 300; y++)
-                {
+            Parallel.For(0, 300, x =>
+            {
+                Parallel.For(0, 300, y => {
+                
 
                     double[,] input = new double[,] { { ((double)x / 300), ((double)y / 300) } };
                     double[,] result = nn.CheckAnswer(input);
@@ -308,9 +309,10 @@ namespace NeuralNetworkPlayground
                         color = (byte)(127 + (byte)(result[0, 1] * 127));
                         wpfGraphics.SetPixel(x, y, color, color, 0);
                     }
-                }
-
-            DrawPoints();
+                });
+            });
+   
+               DrawPoints();
         }
 
         private void DrawPoints()
