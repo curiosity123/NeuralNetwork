@@ -23,7 +23,7 @@ namespace NeuralNetworkPlayground
 
         public ImageLearningViewModel()
         {
-            wpfGraphics = new WpfGraphics(CanvasCollection2,100,100);
+            wpfGraphics = new WpfGraphics(CanvasCollection2, 100, 100);
             Topology = "6;5;4";
             LayersParser(Topology);
         }
@@ -61,7 +61,7 @@ namespace NeuralNetworkPlayground
             while (IsLearningRightNow)
                 if (nn != null)
                 {
-                    nn.BackwardPropagation(1);
+                    nn.BackwardPropagation(50);
 
                     Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
@@ -174,7 +174,7 @@ namespace NeuralNetworkPlayground
         public ICommand OpenCommand { get { return new RelayCommand(x => true, Open); } }
         private void Open(object obj)
         {
-            TestBitmap = new BitmapImage(new Uri("C://test//test.jpg"));
+            TestBitmap = new BitmapImage(new Uri("C://test//luki.jpg"));
             InitializeBitmapData();
             //open image
         }
@@ -234,6 +234,26 @@ namespace NeuralNetworkPlayground
         double[,] X;
         double[,] Y;
 
+        private byte getByte(double b)
+        {
+            if (b < -1)
+                b = -1;
+            if (b > 1)
+                b = 1;
+
+            return (byte)(((b + 1) / 2) * 255);
+        }
+
+        private double getDouble(byte b)
+        {
+            double result = 0;
+            result = (double)(b - 128) / 256;
+            result *= 2;
+
+            return result;
+        }
+
+
         private void InitializeBitmapData()
         {
             IsLearningRightNow = false;
@@ -249,11 +269,11 @@ namespace NeuralNetworkPlayground
             for (int x = 0; x < 100; x++)
                 for (int y = 0; y < 100; y++)
                 {
-                    X[x * 100 + y, 0] = (double)(x / 100);
-                    X[x * 100 + y, 1] = (double)(y / 100);
-                    Y[x * 100 + y, 0] = (double)(GetPixelColor(TestBitmap, x, y).R / 256);
-                    Y[x * 100 + y, 1] = (double)(GetPixelColor(TestBitmap, x, y).G / 256);
-                    Y[x * 100 + y, 2] = (double)(GetPixelColor(TestBitmap, x, y).B / 256);
+                    X[x * 100 + y, 0] = (double)(((double)(x - 50)) / 50);
+                    X[x * 100 + y, 1] = (double)(((double)(y - 50)) / 50);
+                    Y[x * 100 + y, 0] = getDouble((GetPixelColor(TestBitmap, x, y).R));
+                    Y[x * 100 + y, 1] = getDouble((GetPixelColor(TestBitmap, x, y).G));
+                    Y[x * 100 + y, 2] = getDouble((GetPixelColor(TestBitmap, x, y).B));
                 }
 
 
@@ -281,12 +301,14 @@ namespace NeuralNetworkPlayground
             {
                 Parallel.For(0, 100, y =>
                 {
-                    double[,] input = new double[,] { { ((double)x / 100), ((double)y / 100) } };
+                    double[,] input = new double[1, 2];
+                    input[0, 0] = (double)(((double)(x - 50)) / 50);
+                    input[0, 1] = (double)(((double)(y - 50)) / 50);
                     double[,] result = nn.CheckAnswer(input);
 
                     // wpfGraphics.SetPixel(x, y, 255, 0,0);
-
-                    wpfGraphics.SetPixel(x, y,(byte)( result[0,0]*25), (byte)(result[0, 1]*25), (byte)(result[0, 2]*25));
+                    //  wpfGraphics.SetPixel(x, y, getByte(Y[x * 100 + y, 0]), getByte(Y[x * 100 + y, 1]), getByte(Y[x * 100 + y, 2]));
+                    wpfGraphics.SetPixel(x, y, getByte(result[0, 0]), getByte(result[0, 1]), getByte(result[0, 2]));// getByte(result[0, 1]), getByte(result[0, 2]));
                 });
             });
             wpfGraphics.Draw();
