@@ -18,6 +18,7 @@ namespace NeuralNetworkPlayground
         int rawStride;
         byte[] pixelData;
         ObservableCollection<UIElement> canvasCollection;
+        
         int Width, Height;
 
         private WpfGraphics()

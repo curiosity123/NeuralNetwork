@@ -104,14 +104,16 @@
                     <local:ImageLearningViewModel x:Name="context2"/>
                 </Grid.DataContext>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="220"></ColumnDefinition>
+                    <ColumnDefinition Width="320"></ColumnDefinition>
                     <ColumnDefinition Width="300"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <StackPanel  Margin="10" Orientation="Horizontal" Height="100">
-                    <Image Grid.Row="0" Height="100" Width="100"  HorizontalAlignment="Left"  VerticalAlignment="Top" Source="{Binding TestBitmap}"></Image>
-                    <ItemsControl  Grid.Row="0" Height="100" Width="100" Background="Black"  HorizontalAlignment="Right" ItemsSource="{Binding CanvasCollection2}" ></ItemsControl>
+                <StackPanel  Margin="10" Orientation="Vertical">
+                    <StackPanel Width="300" Height="300">
+                        <Image Grid.Row="0"   HorizontalAlignment="Left" Stretch="Fill"  VerticalAlignment="Top" Source="{Binding TestBitmap}"></Image>
+                    </StackPanel>
+                    <ItemsControl  Grid.Row="0" Height="300" Width="300" Background="Black"  HorizontalAlignment="Right" ItemsSource="{Binding CanvasCollection2}" ></ItemsControl>
                  </StackPanel>
-                <StackPanel Grid.Row="0" Grid.Column="1" Height="300"  Orientation="Vertical">
+                <StackPanel Grid.Row="0" Grid.Column="1" Height="300" VerticalAlignment="Top"  Orientation="Vertical">
                     <StackPanel Orientation="Horizontal" Margin="0">
                         <Button  Width="130" Command="{Binding LearnCommand}" Content="{Binding ButtonLearnTitle}" ></Button>
                         <Button  Width="130"  Command="{Binding ClearCommand}"  >Clear network</Button>
@@ -131,12 +133,6 @@
                         <Slider x:Name="alpha2" Minimum="0.01" Margin="55,0,0,0" VerticalAlignment="Center" Maximum="1" Width="90" Value="{Binding LearningRate}"></Slider>
                         <TextBlock  FontSize="16"  VerticalAlignment="Center" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="{Binding ElementName=alpha2,  Path=Value}" ></TextBlock>
                     </DockPanel>
-                    <DockPanel LastChildFill="True" Height="30" Margin=" 10,10">
-                        <TextBlock  FontSize="16" Margin="0,5" >Learn to test ratio</TextBlock>
-                        <Slider x:Name="tests2" Margin="23,0,0,0" VerticalAlignment="Center" Maximum="1" Width="90" Value="{Binding LearnToTest}"></Slider>
-                        <TextBlock  FontSize="16"  VerticalAlignment="Center" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="{Binding ElementName=tests2,  Path=Value}" ></TextBlock>
-                    </DockPanel>
-                    <TextBlock Foreground="Red" FontSize="16" Margin="10,10" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="{Binding LossRMSETest}"></TextBlock>
                     <TextBlock Foreground="Blue" FontSize="16" Margin="10,10" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="{Binding LossRMSE}"></TextBlock>
                     <Button  Width="130" Command="{Binding OpenCommand}" HorizontalAlignment="Left" Content="Open image" ></Button>
                 </StackPanel>
