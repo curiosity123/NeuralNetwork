@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,7 +25,7 @@ namespace NeuralNetworkPlayground
         public ImageLearningViewModel()
         {
             wpfGraphics = new WpfGraphics(CanvasCollection2, 100, 100);
-            Topology = "6;5;4";
+            Topology = "15;15;15;15";
             LayersParser(Topology);
         }
 
@@ -61,12 +62,15 @@ namespace NeuralNetworkPlayground
             while (IsLearningRightNow)
                 if (nn != null)
                 {
-                    nn.BackwardPropagation(50);
-
+                    Stopwatch st = new Stopwatch();
+                    st.Start();
+                        nn.BackwardPropagation(30);
+                    st.Stop();
+                    
                     Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
-                    DrawNetworkAnswer();
-                    LossRMSE = "RMSE:" + nn.GetRMSELoss(X, Y);
+                   DrawNetworkAnswer();
+                    LossRMSE = st.Elapsed.ToString()+ " RMSE:" + nn.GetRMSELoss(X, Y);
                     ButtonLearnTitle = "Stop learning process";
                 }));
 
@@ -174,7 +178,7 @@ namespace NeuralNetworkPlayground
         public ICommand OpenCommand { get { return new RelayCommand(x => true, Open); } }
         private void Open(object obj)
         {
-            TestBitmap = new BitmapImage(new Uri("C://test//luki.jpg"));
+            TestBitmap = new BitmapImage(new Uri("C://test//test.jpg"));
             InitializeBitmapData();
             //open image
         }
@@ -305,9 +309,6 @@ namespace NeuralNetworkPlayground
                     input[0, 0] = (double)(((double)(x - 50)) / 50);
                     input[0, 1] = (double)(((double)(y - 50)) / 50);
                     double[,] result = nn.CheckAnswer(input);
-
-                    // wpfGraphics.SetPixel(x, y, 255, 0,0);
-                    //  wpfGraphics.SetPixel(x, y, getByte(Y[x * 100 + y, 0]), getByte(Y[x * 100 + y, 1]), getByte(Y[x * 100 + y, 2]));
                     wpfGraphics.SetPixel(x, y, getByte(result[0, 0]), getByte(result[0, 1]), getByte(result[0, 2]));// getByte(result[0, 1]), getByte(result[0, 2]));
                 });
             });

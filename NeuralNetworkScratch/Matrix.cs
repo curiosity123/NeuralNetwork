@@ -61,19 +61,30 @@ namespace NeuralNetworkScratch
             return sum;
         }
 
-        public static double[,] Mul(double[,] A, double[,] B)
+        public static double[,] Mul(double[,] mA, double[,] mB)
         {
-            int rowA = A.GetLength(0);
-            int columnA = A.GetLength(1);
-            int rowB = B.GetLength(0);
-            int columnB = B.GetLength(1);
+            int rowA = mA.GetLength(0);
+            int columnA = mA.GetLength(1);
+            int rowB = mB.GetLength(0);
+            int columnB = mB.GetLength(1);
             double[,] ResultMatrix = new double[rowA, columnB];
 
-            for (int i = 0; i < rowA; i++)
-                for (int j = 0; j < columnB; j++)
-                    for (int k = 0; k < columnA; k++)
-                        ResultMatrix[i, j] += A[i, k] * B[k, j]; 
-            
+
+            if (rowA < 100)
+            {
+                for (int i = 0; i < rowA; i++)
+                    for (int j = 0; j < columnB; j++)
+                        for (int k = 0; k < columnA; k++)
+                            ResultMatrix[i, j] += mA[i, k] * mB[k, j];
+            }
+            else
+                Parallel.For(0, rowA, i =>
+                {
+                    for (int j = 0; j < columnB; j++)
+                        for (int k = 0; k < columnA; k++)
+                            ResultMatrix[i, j] += mA[i, k] * mB[k, j];
+                });
+
             return ResultMatrix;
         }
         public static double[,] Rand(double[,] matrix, Random r)

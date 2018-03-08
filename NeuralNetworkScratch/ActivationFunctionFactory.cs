@@ -17,8 +17,8 @@ namespace NeuralNetworkScratch
                     prime = (x) => (1 - Math.Pow(Math.Tanh(x), 2));
                     break;
                 case ActivationFunction.RELU:
-                    activation = (x) => (x < 0) ? 0 : x;
-                    prime = (x) => (x < 0) ? 0 : x;
+                    activation = (x) => (x <= 0) ? 0 : x;
+                    prime = (x) => (x <= 0) ? 0 : x;
                     break;
                 default:
                     activation = (x) => 0;
