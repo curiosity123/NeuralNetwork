@@ -1,9 +1,12 @@
-﻿using NeuralNetworkScratch;
+﻿using Microsoft.Win32;
+using NeuralNetworkScratch;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -59,18 +62,17 @@ namespace NeuralNetworkPlayground
 
         private void Learning()
         {
+            int i = 0;
             while (IsLearningRightNow)
                 if (nn != null)
                 {
-                    Stopwatch st = new Stopwatch();
-                    st.Start();
-                        nn.BackwardPropagation(30);
-                    st.Stop();
-                    
+                    nn.BackwardPropagation(1);
                     Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
-                   DrawNetworkAnswer();
-                    LossRMSE = st.Elapsed.ToString()+ " RMSE:" + nn.GetRMSELoss(X, Y);
+                    if (i % 10 == 0)
+                        DrawNetworkAnswer();
+                    LossRMSE ="Epoch:"+ i.ToString() + " RMSE:" + nn.GetRMSELoss(X, Y);
+                    i++;
                     ButtonLearnTitle = "Stop learning process";
                 }));
 
@@ -168,7 +170,6 @@ namespace NeuralNetworkPlayground
         }
 
 
-
         public ICommand TopologyChangedCommand { get { return new RelayCommand(x => true, TopologyChanged); } }
         private void TopologyChanged(object obj)
         {
@@ -177,15 +178,43 @@ namespace NeuralNetworkPlayground
 
         public ICommand OpenCommand { get { return new RelayCommand(x => true, Open); } }
         private void Open(object obj)
-        {
-            TestBitmap = new BitmapImage(new Uri("C://test//test.jpg"));
+        { 
+
+            string Path = "";
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.InitialDirectory = Environment.CurrentDirectory;
+            openFileDialog1.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
+            if (openFileDialog1.ShowDialog() == true)
+                Path = openFileDialog1.FileName;
+            else
+                return;
+
+            Bitmap original = (Bitmap)System.Drawing.Image.FromFile(Path);
+            Bitmap resized = new Bitmap(original, new System.Drawing.Size(100,100));
+            TestBitmap = BitmapToBitmapImage(resized);
+
+           // TestBitmap = new BitmapImage(new Uri(Path));
+
+
             InitializeBitmapData();
             //open image
         }
 
-        public static Color GetPixelColor(BitmapSource bitmap, int x, int y)
+        private BitmapImage BitmapToBitmapImage(Bitmap b)
         {
-            Color color;
+            MemoryStream ms = new MemoryStream();
+            b.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            BitmapImage image = new BitmapImage();
+            image.BeginInit();
+            ms.Seek(0, SeekOrigin.Begin);
+            image.StreamSource = ms;
+            image.EndInit();
+            return image;
+        }
+
+        public static System.Windows.Media.Color GetPixelColor(BitmapSource bitmap, int x, int y)
+        {
+            System.Windows.Media.Color color;
             var bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;
             var bytes = new byte[bytesPerPixel];
             var rect = new Int32Rect(x, y, 1, 1);
@@ -194,11 +223,11 @@ namespace NeuralNetworkPlayground
 
             if (bitmap.Format == PixelFormats.Bgra32)
             {
-                color = Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
+                color = System.Windows.Media.Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
             }
             else if (bitmap.Format == PixelFormats.Bgr32)
             {
-                color = Color.FromRgb(bytes[2], bytes[1], bytes[0]);
+                color = System.Windows.Media.Color.FromRgb(bytes[2], bytes[1], bytes[0]);
             }
             // handle other required formats
             else
