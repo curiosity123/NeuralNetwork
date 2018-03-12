@@ -91,7 +91,7 @@ namespace NeuralNetworkPlayground
                 RaisePropertyChangedEvent("ButtonLearnTitle");
             }
         }
-
+    
 
 
         private string lossRMSETest = "RMSE Test: 0";
@@ -143,19 +143,7 @@ namespace NeuralNetworkPlayground
                 RaisePropertyChangedEvent("LearningRate");
             }
         }
-
-        private double learnToTest = 0.8;
-
-        public double LearnToTest
-        {
-            get { return learnToTest; }
-            set
-            {
-                learnToTest = value;
-                RaisePropertyChangedEvent("LearnToTest");
-            }
-        }
-
+    
 
         private BitmapImage testBitmap;
 
@@ -192,12 +180,7 @@ namespace NeuralNetworkPlayground
             Bitmap original = (Bitmap)System.Drawing.Image.FromFile(Path);
             Bitmap resized = new Bitmap(original, new System.Drawing.Size(100,100));
             TestBitmap = BitmapToBitmapImage(resized);
-
-           // TestBitmap = new BitmapImage(new Uri(Path));
-
-
-            InitializeBitmapData();
-            //open image
+            InitializeNetwork();
         }
 
         private BitmapImage BitmapToBitmapImage(Bitmap b)
@@ -287,13 +270,10 @@ namespace NeuralNetworkPlayground
         }
 
 
-        private void InitializeBitmapData()
+        private void InitializeNetwork()
         {
             IsLearningRightNow = false;
-
-
             wpfGraphics.Clear();
-
 
             X = new double[10000, 2];
             Y = new double[10000, 3];
@@ -309,22 +289,15 @@ namespace NeuralNetworkPlayground
                     Y[x * 100 + y, 2] = getDouble((GetPixelColor(TestBitmap, x, y).B));
                 }
 
-
-
-            //NeuralNetworkScratch.Matrix.Unsort(ref X, ref Y, new Random());
-
             Layer[] layers = new Layer[2 + HiddenLayers.Count()];
-
             layers[0] = new Layer(LayerType.Input, X, ActivationFunction.Tanh);
 
             for (int i = 1; i < HiddenLayers.Count() + 1; i++)
                 layers[i] = HiddenLayers[i - 1];
 
             layers[layers.Count() - 1] = new Layer(LayerType.Output, Y, ActivationFunction.Tanh);
-
             nn = new NEngine(layers, Y, LearningRate, 0);
-
-            NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
+            nn.ForwardPropagation();
         }
 
         private void DrawNetworkAnswer()
@@ -342,7 +315,6 @@ namespace NeuralNetworkPlayground
                 });
             });
             wpfGraphics.Draw();
-
         }
 
 
