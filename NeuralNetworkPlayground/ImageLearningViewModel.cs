@@ -24,6 +24,9 @@ namespace NeuralNetworkPlayground
         NEngine nn;
         WpfGraphics wpfGraphics;
         bool IsLearningRightNow = false;
+        List<Layer> HiddenLayers;
+        double[,] X;
+        double[,] Y;
 
         public ImageLearningViewModel()
         {
@@ -33,7 +36,6 @@ namespace NeuralNetworkPlayground
         }
 
         private ObservableCollection<UIElement> canvasCollection = new ObservableCollection<UIElement>();
-
         public ObservableCollection<UIElement> CanvasCollection2
         {
             get { return canvasCollection; }
@@ -41,47 +43,7 @@ namespace NeuralNetworkPlayground
         }
 
 
-        public ICommand LearnCommand { get { return new RelayCommand(x => true, Learn); } }
-        private void Learn(object obj)
-        {
-            LearningCommandManager();
-        }
-
-        private void LearningCommandManager()
-        {
-            if (!IsLearningRightNow)
-            {
-                IsLearningRightNow = true;
-                Task.Factory.StartNew(Learning);
-            }
-            else
-            {
-                IsLearningRightNow = false;
-            }
-        }
-
-        private void Learning()
-        {
-            int i = 0;
-            while (IsLearningRightNow)
-                if (nn != null)
-                {
-                    nn.BackwardPropagation(1);
-                    Application.Current.Dispatcher.Invoke((Action)(() =>
-                {
-                    if (i % 10 == 0)
-                        DrawNetworkAnswer();
-                    LossRMSE ="Epoch:"+ i.ToString() + " RMSE:" + nn.GetRMSELoss(X, Y);
-                    i++;
-                    ButtonLearnTitle = "Stop learning process";
-                }));
-
-                }
-            ButtonLearnTitle = "Start learning process";
-        }
-
         private string buttonLearnTitle = "Start learning process";
-
         public string ButtonLearnTitle
         {
             get { return buttonLearnTitle; }
@@ -91,11 +53,8 @@ namespace NeuralNetworkPlayground
                 RaisePropertyChangedEvent("ButtonLearnTitle");
             }
         }
-    
-
 
         private string lossRMSETest = "RMSE Test: 0";
-
         public string LossRMSETest
         {
             get { return lossRMSETest; }
@@ -108,7 +67,6 @@ namespace NeuralNetworkPlayground
 
 
         private string lossRMSE = "RMSE: 0";
-
         public string LossRMSE
         {
             get { return lossRMSE; }
@@ -120,7 +78,6 @@ namespace NeuralNetworkPlayground
         }
 
         private string topology;
-
         public string Topology
         {
             get { return topology; }
@@ -133,7 +90,6 @@ namespace NeuralNetworkPlayground
 
 
         private double learningRate = 0.1;
-
         public double LearningRate
         {
             get { return learningRate; }
@@ -146,7 +102,6 @@ namespace NeuralNetworkPlayground
     
 
         private BitmapImage testBitmap;
-
         public BitmapImage TestBitmap
         {
             get { return testBitmap; }
@@ -158,13 +113,20 @@ namespace NeuralNetworkPlayground
         }
 
 
+        public ICommand LearnCommand { get { return new RelayCommand(x => true, Learn); } }
+        private void Learn(object obj)
+        {
+            LearningCommandManager();
+        }
+
         public ICommand TopologyChangedCommand { get { return new RelayCommand(x => true, TopologyChanged); } }
         private void TopologyChanged(object obj)
         {
             LayersParser(obj);
+            InitializeNetwork();
         }
 
-        public ICommand OpenCommand { get { return new RelayCommand(x => true, Open); } }
+        public ICommand OpenCommand { get { return new RelayCommand(x => !IsLearningRightNow, Open); } }
         private void Open(object obj)
         { 
 
@@ -183,72 +145,15 @@ namespace NeuralNetworkPlayground
             InitializeNetwork();
         }
 
-        private BitmapImage BitmapToBitmapImage(Bitmap b)
-        {
-            MemoryStream ms = new MemoryStream();
-            b.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-            BitmapImage image = new BitmapImage();
-            image.BeginInit();
-            ms.Seek(0, SeekOrigin.Begin);
-            image.StreamSource = ms;
-            image.EndInit();
-            return image;
-        }
-
-        public static System.Windows.Media.Color GetPixelColor(BitmapSource bitmap, int x, int y)
-        {
-            System.Windows.Media.Color color;
-            var bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;
-            var bytes = new byte[bytesPerPixel];
-            var rect = new Int32Rect(x, y, 1, 1);
-
-            bitmap.CopyPixels(rect, bytes, bytesPerPixel, 0);
-
-            if (bitmap.Format == PixelFormats.Bgra32)
-            {
-                color = System.Windows.Media.Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
-            }
-            else if (bitmap.Format == PixelFormats.Bgr32)
-            {
-                color = System.Windows.Media.Color.FromRgb(bytes[2], bytes[1], bytes[0]);
-            }
-            // handle other required formats
-            else
-            {
-                color = Colors.Black;
-            }
-
-            return color;
-        }
-
-        private void LayersParser(object obj)
-        {
-            string[] layers = (obj as string).Split(';');
-            HiddenLayers = new List<Layer>();
-
-            int value = 0;
-            foreach (string s in layers)
-                if (int.TryParse(s, out value) && value > 0)
-                    HiddenLayers.Add(new Layer(LayerType.Hidden, value, ActivationFunction.Tanh));
-
-            if (HiddenLayers.Count < 1)
-            {
-                Topology = "4;3";
-                LayersParser(Topology);
-            }
-        }
-
         public ICommand ClearCommand { get { return new RelayCommand(x => true, Clear); } }
         private void Clear(object obj)
         {
             IsLearningRightNow = false;
             wpfGraphics.Clear();
+            InitializeNetwork();
         }
 
-        List<Layer> HiddenLayers;
 
-        double[,] X;
-        double[,] Y;
 
         private byte getByte(double b)
         {
@@ -269,6 +174,25 @@ namespace NeuralNetworkPlayground
             return result;
         }
 
+        private void Learning()
+        {
+            int i = 0;
+            while (IsLearningRightNow)
+                if (nn != null)
+                {
+                    nn.BackwardPropagation(1);
+                    Application.Current.Dispatcher.Invoke((Action)(() =>
+                    {
+                        if (i % 10 == 0)
+                            DrawNetworkAnswer();
+                        LossRMSE = "Epoch:" + i.ToString() + " RMSE:" + nn.GetRMSELoss(X, Y);
+                        i++;
+                        ButtonLearnTitle = "Stop learning process";
+                    }));
+
+                }
+            ButtonLearnTitle = "Start learning process";
+        }
 
         private void InitializeNetwork()
         {
@@ -311,10 +235,78 @@ namespace NeuralNetworkPlayground
                     input[0, 0] = (double)(((double)(x - 50)) / 50);
                     input[0, 1] = (double)(((double)(y - 50)) / 50);
                     double[,] result = nn.CheckAnswer(input);
-                    wpfGraphics.SetPixel(x, y, getByte(result[0, 0]), getByte(result[0, 1]), getByte(result[0, 2]));// getByte(result[0, 1]), getByte(result[0, 2]));
+                    wpfGraphics.SetPixel(x, y, getByte(result[0, 0]), getByte(result[0, 1]), getByte(result[0, 2]));
                 });
             });
             wpfGraphics.Draw();
+        }
+
+        public System.Windows.Media.Color GetPixelColor(BitmapSource bitmap, int x, int y)
+        {
+            System.Windows.Media.Color color;
+            var bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;
+            var bytes = new byte[bytesPerPixel];
+            var rect = new Int32Rect(x, y, 1, 1);
+
+            bitmap.CopyPixels(rect, bytes, bytesPerPixel, 0);
+
+            if (bitmap.Format == PixelFormats.Bgra32)
+            {
+                color = System.Windows.Media.Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
+            }
+            else if (bitmap.Format == PixelFormats.Bgr32)
+            {
+                color = System.Windows.Media.Color.FromRgb(bytes[2], bytes[1], bytes[0]);
+            }
+            // handle other required formats
+            else
+            {
+                color = Colors.Black;
+            }
+
+            return color;
+        }
+
+        private BitmapImage BitmapToBitmapImage(Bitmap b)
+        {
+            MemoryStream ms = new MemoryStream();
+            b.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            BitmapImage image = new BitmapImage();
+            image.BeginInit();
+            ms.Seek(0, SeekOrigin.Begin);
+            image.StreamSource = ms;
+            image.EndInit();
+            return image;
+        }
+
+        private void LayersParser(object obj)
+        {
+            string[] layers = (obj as string).Split(';');
+            HiddenLayers = new List<Layer>();
+
+            int value = 0;
+            foreach (string s in layers)
+                if (int.TryParse(s, out value) && value > 0)
+                    HiddenLayers.Add(new Layer(LayerType.Hidden, value, ActivationFunction.Tanh));
+
+            if (HiddenLayers.Count < 1)
+            {
+                Topology = "4;3";
+                LayersParser(Topology);
+            }
+        }
+
+        private void LearningCommandManager()
+        {
+            if (!IsLearningRightNow)
+            {
+                IsLearningRightNow = true;
+                Task.Factory.StartNew(Learning);
+            }
+            else
+            {
+                IsLearningRightNow = false;
+            }
         }
 
 
