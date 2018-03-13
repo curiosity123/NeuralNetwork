@@ -97,15 +97,16 @@ namespace NeuralNetworkPlayground
 
         private void Learning()
         {
+            int i = 0;
             while (IsLearningRightNow)
                 if (nn != null)
                 {
                     nn.BackwardPropagation(1000);
-
+                    i += 1000; ;
                     Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
                     DrawNetworkAnswer();
-                    LossRMSE = "RMSE:" + nn.GetRMSELoss(X2, Y2);
+                    LossRMSE = "Epoch:" + i.ToString() + "  RMSE:" + nn.GetRMSELoss(X2, Y2);
                     LossRMSETest = "RMSE Test:" + nn.GetRMSELoss(TestX, TestY);
                     ButtonLearnTitle = "Stop learning process";
                 }));
