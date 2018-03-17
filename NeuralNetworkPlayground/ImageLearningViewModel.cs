@@ -162,7 +162,8 @@ namespace NeuralNetworkPlayground
             if (b > 1)
                 b = 1;
 
-            return (byte)(((b + 1) / 2) * 255);
+               return (byte)(((b + 1) / 2) * 255);
+          //  return (byte)(((b ) ) * 255);
         }
 
         private double getDouble(byte b)
@@ -214,7 +215,7 @@ namespace NeuralNetworkPlayground
                 }
 
             Layer[] layers = new Layer[2 + HiddenLayers.Count()];
-            layers[0] = new Layer(LayerType.Input, X, ActivationFunction.Tanh);
+            layers[0] = new Layer(LayerType.Input, X, ActivationFunction.RELU);
 
             for (int i = 1; i < HiddenLayers.Count() + 1; i++)
                 layers[i] = HiddenLayers[i - 1];

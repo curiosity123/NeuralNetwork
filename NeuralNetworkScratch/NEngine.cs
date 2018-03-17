@@ -128,6 +128,11 @@ namespace NeuralNetworkScratch
                     Zt[i] = Matrix.Mul(TestedX, W[i]);
                     At[i] = Matrix.Func(Zt[i], activationFunc[i]);
                 }
+                else if( i==layers.Length-1)
+                {
+                    Zt[i] = Matrix.Mul(Matrix.AddFeatureBias(At[i - 1], 1), W[i]);
+                    At[i] = Matrix.Func(Zt[i], (x)=>x);
+                }
                 else
                 {
                     Zt[i] = Matrix.Mul(Matrix.AddFeatureBias(At[i - 1], 1), W[i]);
@@ -146,6 +151,11 @@ namespace NeuralNetworkScratch
                 {
                     Z[i] = Matrix.Mul(X, W[i]);
                     A[i] = Matrix.Func(Z[i], activationFunc[i]);
+                }
+                else if (i == layers.Length - 1)
+                {
+                    Z[i] = Matrix.Mul(Matrix.AddFeatureBias(A[i - 1], 1), W[i]);
+                    A[i] = Matrix.Func(Z[i],(x)=>x);
                 }
                 else
                 {
