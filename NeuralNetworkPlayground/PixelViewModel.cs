@@ -101,8 +101,8 @@ namespace NeuralNetworkPlayground
             while (IsLearningRightNow)
                 if (nn != null)
                 {
-                    nn.BackwardPropagation(1000);
-                    i += 1000; ;
+                    nn.BackwardPropagation(100);
+                    i += 100; ;
                     Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
                     DrawNetworkAnswer();
