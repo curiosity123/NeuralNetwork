@@ -141,6 +141,7 @@ namespace NeuralNetworkPlayground
 
             Bitmap original = (Bitmap)System.Drawing.Image.FromFile(Path);
             Bitmap resized = new Bitmap(original, new System.Drawing.Size(100,100));
+            resized.SetResolution(100, 100);
             TestBitmap = BitmapToBitmapImage(resized);
             InitializeNetwork();
         }

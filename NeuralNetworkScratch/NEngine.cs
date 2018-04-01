@@ -25,7 +25,7 @@ namespace NeuralNetworkScratch
         private readonly double _learningRate = 0.1;
         private readonly double _regularizationRate = 0.1;
 
-        public NEngine(Layer[] layers, double[,] Y, double LearningRate, double ReguralizationRate)
+        public NEngine(Layer[] layers, double[,] Y, double LearningRate, double ReguralizationRate,int BatchSize=500)
         {
             this.Y = Y;
             this.layers = layers;
@@ -35,6 +35,7 @@ namespace NeuralNetworkScratch
             Initialize();
             ForwardPropagation();
         }
+
 
 
         private void Initialize()
