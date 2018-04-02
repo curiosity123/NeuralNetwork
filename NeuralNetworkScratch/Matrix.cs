@@ -95,6 +95,24 @@ namespace NeuralNetworkScratch
             return matrix;
         }
 
+
+
+        public static double[,] GetBatch(double[,] matrix, int BatchSize,int OffSet = 0)
+        {
+            double[,] Result = new double[BatchSize, matrix.GetLength(1)];
+            int index = 0;
+
+            for (int i = OffSet; i < OffSet + BatchSize; i++)
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                { 
+                    Result[index, j] = matrix[i, j];
+                    index++;
+                }
+            return Result;
+        }
+
+
+
         public static double[,] Unsort(ref double[,] matrix, ref double[,] matrixY, Random r)
         {
             for (int i = 0; i < matrix.GetLength(0); i++)
