@@ -13,6 +13,8 @@ namespace NeuralNetworkScratch
 
         private double[,] X;
         private double[,] Y;
+        private double[,] AllX;
+        private double[,] AllY;
         private double[][,] W;
         private double[][,] Gradient;
         private double[][,] Sigma;
@@ -25,10 +27,12 @@ namespace NeuralNetworkScratch
         private readonly double _learningRate = 0.1;
         private readonly double _regularizationRate = 0.1;
         private readonly int _batchSize;
+        private int batchPosition = 0;
 
-        public NEngine(Layer[] layers, double[,] Y, double LearningRate, double ReguralizationRate,int BatchSize=500)
+        public NEngine(Layer[] layers, double[,] Y, double LearningRate, double ReguralizationRate, int BatchSize = 1200)
         {
-            this.Y = Y;
+            AllY = Y;
+            AllX = layers[0].matrix;
             this.layers = layers;
             _learningRate = LearningRate;
             _regularizationRate = ReguralizationRate;
@@ -37,15 +41,24 @@ namespace NeuralNetworkScratch
             ForwardPropagation();
         }
 
-
+        private void LoadNextBatchSet(int offset)
+        {
+            if (offset < layers[0].matrix.GetLength(0))
+            {
+                X = Matrix.GetBatch(layers[0].matrix, _batchSize, offset);
+                X = Matrix.AddFeatureBias(X, 1);
+                Y = Matrix.GetBatch(AllY, _batchSize, offset);
+            }
+        }
 
 
         private void Initialize()
         {
-            X = layers[0].matrix;
-        //    X = Matrix.Unsort(ref X,ref Y, new Random());
-       //     X = Matrix.Unsort(ref X, ref Y, new Random());
+
+            batchPosition = 0;
+            X = Matrix.GetBatch(layers[0].matrix, _batchSize, 0);
             X = Matrix.AddFeatureBias(X, 1);
+            Y = Matrix.GetBatch(AllY, _batchSize, 0);
             W = new double[layers.Length - 1][,];
             Gradient = new double[layers.Length - 1][,];
             Sigma = new double[layers.Length - 1][,];
@@ -107,7 +120,7 @@ namespace NeuralNetworkScratch
             double[][,] At = new double[layers.Length - 1][,];
             double[][,] Zt = new double[layers.Length - 1][,];
             double[,] TestedX = Matrix.AddFeatureBias(TX, 1);
-     
+
             for (int i = 1; i < layers.Length; i++)
             {
                 if (i == 1)
@@ -131,10 +144,10 @@ namespace NeuralNetworkScratch
                     Zt[i] = Matrix.Mul(TestedX, W[i]);
                     At[i] = Matrix.Func(Zt[i], activationFunc[i]);
                 }
-                else if( i==layers.Length-1)
+                else if (i == layers.Length - 1)
                 {
                     Zt[i] = Matrix.Mul(Matrix.AddFeatureBias(At[i - 1], 1), W[i]);
-                    At[i] = Matrix.Func(Zt[i], (x)=>x);
+                    At[i] = Matrix.Func(Zt[i], (x) => x);
                 }
                 else
                 {
@@ -158,7 +171,7 @@ namespace NeuralNetworkScratch
                 else if (i == layers.Length - 1)
                 {
                     Z[i] = Matrix.Mul(Matrix.AddFeatureBias(A[i - 1], 1), W[i]);
-                    A[i] = Matrix.Func(Z[i],(x)=>x);
+                    A[i] = Matrix.Func(Z[i], (x) => x);
                 }
                 else
                 {
@@ -174,9 +187,22 @@ namespace NeuralNetworkScratch
         {
             for (int i = 0; i < Iteration; i++)
             {
-                GradientFunction();
-                UpdateWeight();
-                ForwardPropagation();
+                int batchCount = AllX.GetLength(0) / _batchSize;
+                if (((double)AllX.GetLength(0) /(double) _batchSize) > (double)batchCount)
+                    batchCount++;
+
+                int offset = 0;
+                for (int b = 0; b < batchCount; b++)
+                {
+                    ForwardPropagation();
+                    GradientFunction();
+                    UpdateWeight();
+
+
+                    offset += _batchSize;
+                   
+                    LoadNextBatchSet(offset);
+                }
             }
         }
 
@@ -224,17 +250,17 @@ namespace NeuralNetworkScratch
 
         public string GetMAELoss()
         {
-            double[,] loss = Matrix.Func(CheckAnswer(Matrix.RemoveFeatureBias(X)), Y, (x,y)=> Math.Abs(x-y));
+            double[,] loss = Matrix.Func(CheckAnswer(Matrix.RemoveFeatureBias(X)), Y, (x, y) => Math.Abs(x - y));
 
             double result = Matrix.Sum(loss);///Matrix.Sum(Y);
-            return Math.Round(result,4).ToString();
+            return Math.Round(result, 4).ToString();
         }
 
         public string GetRMSELoss(double[,] data, double[,] newY)
         {
-            double[,] loss = Matrix.Func(CheckAnswer(data), newY, (x, y) => Math.Pow(x - y,2));
+            double[,] loss = Matrix.Func(CheckAnswer(data), newY, (x, y) => Math.Pow(x - y, 2));
 
-            double result = Math.Sqrt( Matrix.Sum(loss)/loss.GetLength(0));///Matrix.Sum(Y);
+            double result = Math.Sqrt(Matrix.Sum(loss) / loss.GetLength(0));///Matrix.Sum(Y);
             return Math.Round(result, 4).ToString();
         }
 

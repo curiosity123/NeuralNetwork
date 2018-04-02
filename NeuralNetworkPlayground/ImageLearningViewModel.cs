@@ -99,7 +99,18 @@ namespace NeuralNetworkPlayground
                 RaisePropertyChangedEvent("LearningRate");
             }
         }
-    
+
+
+        private int batchSize = 300;
+        public int BatchSize
+        {
+            get { return batchSize; }
+            set
+            {
+                batchSize = value;
+                RaisePropertyChangedEvent("BatchSize");
+            }
+        }
 
         private BitmapImage testBitmap;
         public BitmapImage TestBitmap
@@ -222,7 +233,7 @@ namespace NeuralNetworkPlayground
                 layers[i] = HiddenLayers[i - 1];
 
             layers[layers.Count() - 1] = new Layer(LayerType.Output, Y, ActivationFunction.Tanh);
-            nn = new NEngine(layers, Y, LearningRate, 0);
+            nn = new NEngine(layers, Y, LearningRate, 0, BatchSize);
             nn.ForwardPropagation();
         }
 

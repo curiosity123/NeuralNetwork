@@ -97,17 +97,26 @@ namespace NeuralNetworkScratch
 
 
 
-        public static double[,] GetBatch(double[,] matrix, int BatchSize,int OffSet = 0)
+        public static double[,] GetBatch(double[,] matrix, int BatchSize, int OffSet = 0)
         {
-            double[,] Result = new double[BatchSize, matrix.GetLength(1)];
+            int size = BatchSize;
+            if (BatchSize > matrix.GetLength(0) - OffSet)
+                size = matrix.GetLength(0) - OffSet;
+
+
+            double[,] Result = new double[size, matrix.GetLength(1)];
             int index = 0;
 
             for (int i = OffSet; i < OffSet + BatchSize; i++)
+            {
                 for (int j = 0; j < matrix.GetLength(1); j++)
-                { 
+                {
+                    if (i > matrix.GetLength(0) - 1)
+                        return Result;
                     Result[index, j] = matrix[i, j];
-                    index++;
                 }
+                index++;
+            }
             return Result;
         }
 

@@ -136,8 +136,13 @@
                     </DockPanel>
                     <DockPanel LastChildFill="True" Height="30" Margin="10,0" >
                         <TextBlock  FontSize="16" Margin="0" VerticalAlignment="Center" >Learning rate</TextBlock>
-                        <Slider x:Name="alpha2" Minimum="0.01" Margin="55,0,0,0" VerticalAlignment="Center" Maximum="1" Width="90" Value="{Binding LearningRate}"></Slider>
+                        <Slider x:Name="alpha2" Minimum="0.01" Margin="58,0,0,0" VerticalAlignment="Center" Maximum="1" Width="80" Value="{Binding LearningRate}"></Slider>
                         <TextBlock  FontSize="16"  VerticalAlignment="Center" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="{Binding ElementName=alpha2,  Path=Value}" ></TextBlock>
+                    </DockPanel>
+                    <DockPanel LastChildFill="True" Height="30" Margin="10,0" >
+                        <TextBlock  FontSize="16" Margin="0" VerticalAlignment="Center" >Batch size</TextBlock>
+                        <Slider x:Name="batchSize" Minimum="1" Margin="81,0,0,0" VerticalAlignment="Center" Maximum="10000" Width="80" Value="{Binding BatchSize}"></Slider>
+                        <TextBlock  FontSize="16"  VerticalAlignment="Center" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="{Binding ElementName=batchSize,  Path=Value}" ></TextBlock>
                     </DockPanel>
                     <TextBlock Foreground="Blue" FontSize="16" Margin="10,10" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="{Binding LossRMSE}"></TextBlock>
                     <Button  Width="130" Command="{Binding OpenCommand}" HorizontalAlignment="Left" Content="Open image" ></Button>
