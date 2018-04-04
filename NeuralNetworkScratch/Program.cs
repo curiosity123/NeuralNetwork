@@ -42,10 +42,10 @@ namespace NeuralNetworkScratch
             };
 
             NEngine nn = new NEngine(layers, Y,0.1,1);
-            Matrix.Print(nn.ForwardPropagation());
+            nn.ForwardPropagation().Print();
             Console.WriteLine("\n\n");
             nn.BackwardPropagation();
-            Matrix.Print(nn.ForwardPropagation());
+            nn.ForwardPropagation().Print();
             Console.ReadKey();
         }
 

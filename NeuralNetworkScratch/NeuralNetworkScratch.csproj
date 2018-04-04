@@ -64,7 +64,7 @@
   <ItemGroup>
     <Compile Include="ActivationFunctionFactory.cs" />
     <Compile Include="Layer.cs" />
-    <Compile Include="Matrix.cs" />
+    <Compile Include="MatrixExtensions.cs" />
     <Compile Include="NEngine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

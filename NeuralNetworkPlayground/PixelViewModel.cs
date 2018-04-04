@@ -263,10 +263,10 @@ namespace NeuralNetworkPlayground
                 Y[i, 0] = -1;
                 Y[i, 1] = 1;
             }
-            NeuralNetworkScratch.Matrix.Unsort(ref X, ref Y, new Random());
+            MatrixExtensions.Unsort(ref X, ref Y);
 
-            NeuralNetworkScratch.Matrix.SplitMatrix(X, out X2, out TestX, LearnToTest);
-            NeuralNetworkScratch.Matrix.SplitMatrix(Y, out Y2, out TestY, LearnToTest);
+            X.SplitMatrix(out X2, out TestX, LearnToTest);
+            Y.SplitMatrix(out Y2, out TestY, LearnToTest);
 
 
             Layer[] layers = new Layer[2 + HiddenLayers.Count()];
@@ -280,7 +280,7 @@ namespace NeuralNetworkPlayground
 
             nn = new NEngine(layers, Y2, LearningRate, 0);
 
-            NeuralNetworkScratch.Matrix.Print(nn.ForwardPropagation());
+            nn.ForwardPropagation().Print();
         }
 
         private void DrawNetworkAnswer()
@@ -288,8 +288,9 @@ namespace NeuralNetworkPlayground
             wpfGraphics.Clear();
             Parallel.For(0, 300, x =>
             {
-                Parallel.For(0, 300, y => {
-                
+                Parallel.For(0, 300, y =>
+                {
+
 
                     double[,] input = new double[,] { { ((double)x / 300), ((double)y / 300) } };
                     double[,] result = nn.CheckAnswer(input);
@@ -311,8 +312,8 @@ namespace NeuralNetworkPlayground
                     }
                 });
             });
-   
-               DrawPoints();
+
+            DrawPoints();
         }
 
         private void DrawPoints()

@@ -27,7 +27,6 @@ namespace NeuralNetworkScratch
         private readonly double _learningRate = 0.1;
         private readonly double _regularizationRate = 0.1;
         private readonly int _batchSize;
-        private int batchPosition = 0;
 
         public NEngine(Layer[] layers, double[,] Y, double LearningRate, double ReguralizationRate, int BatchSize = 1200)
         {
@@ -45,20 +44,18 @@ namespace NeuralNetworkScratch
         {
             if (offset < layers[0].matrix.GetLength(0))
             {
-                X = Matrix.GetBatch(layers[0].matrix, _batchSize, offset);
-                X = Matrix.AddFeatureBias(X, 1);
-                Y = Matrix.GetBatch(AllY, _batchSize, offset);
+                X = layers[0].matrix.GetBatch(_batchSize, offset);
+                X = X.AddFeatureBias(1);
+                Y = AllY.GetBatch(_batchSize, offset);
             }
         }
 
 
         private void Initialize()
         {
-
-            batchPosition = 0;
-            X = Matrix.GetBatch(layers[0].matrix, _batchSize, 0);
-            X = Matrix.AddFeatureBias(X, 1);
-            Y = Matrix.GetBatch(AllY, _batchSize, 0);
+            X = layers[0].matrix.GetBatch(_batchSize, 0);
+            X = X.AddFeatureBias(1);
+            Y = AllY.GetBatch(_batchSize, 0);
             W = new double[layers.Length - 1][,];
             Gradient = new double[layers.Length - 1][,];
             Sigma = new double[layers.Length - 1][,];
@@ -88,28 +85,7 @@ namespace NeuralNetworkScratch
 
                 ActivationFunctionFactory.SetFunctions(ref activationFunc[i - 1], ref activationFuncPrime[i - 1], layers[i].Type);
 
-                W[i - 1] = Matrix.Rand(W[i - 1], new Random());
-
-                //if (i == 1)
-                //    W[i - 1] = new double[3, 3] {
-                //    {0.01,  0.05,  0.07},
-                //    {0.20,  0.041, 0.11},
-                //    {0.04,  0.56, 0.13}};
-
-
-                //if (i == 2)
-                //    W[i - 1] = new double[3, 2] {
-                //    {0.04,  0.78},
-                //    {0.40,  0.45},
-                //    {0.65,  0.23}};
-
-
-                //if (i == 3)
-                //    W[i - 1] = new double[2, 1] {
-                //    {0.04},
-                //    {0.41}};
-
-                W[i - 1] = Matrix.AddWeightBias(W[i - 1], 0.1);
+                W[i - 1] = W[i - 1].Rand().AddWeightBias(0.1);
             }
 
         }
@@ -119,7 +95,7 @@ namespace NeuralNetworkScratch
 
             double[][,] At = new double[layers.Length - 1][,];
             double[][,] Zt = new double[layers.Length - 1][,];
-            double[,] TestedX = Matrix.AddFeatureBias(TX, 1);
+            double[,] TestedX = TX.AddFeatureBias(1);
 
             for (int i = 1; i < layers.Length; i++)
             {
@@ -141,18 +117,18 @@ namespace NeuralNetworkScratch
             {
                 if (i == 0)
                 {
-                    Zt[i] = Matrix.Mul(TestedX, W[i]);
-                    At[i] = Matrix.Func(Zt[i], activationFunc[i]);
+                    Zt[i] = TestedX.Mul(W[i]);
+                    At[i] = Zt[i].Func(activationFunc[i]);
                 }
                 else if (i == layers.Length - 1)
                 {
-                    Zt[i] = Matrix.Mul(Matrix.AddFeatureBias(At[i - 1], 1), W[i]);
-                    At[i] = Matrix.Func(Zt[i], (x) => x);
+                    Zt[i] = At[i - 1].AddFeatureBias(1).Mul(W[i]);
+                    At[i] = Zt[i].Func((x) => x);
                 }
                 else
                 {
-                    Zt[i] = Matrix.Mul(Matrix.AddFeatureBias(At[i - 1], 1), W[i]);
-                    At[i] = Matrix.Func(Zt[i], activationFunc[i]);
+                    Zt[i] = At[i - 1].AddFeatureBias(1).Mul(W[i]);
+                    At[i] = Zt[i].Func(activationFunc[i]);
                 }
             }
             return At[layers.Length - 2];
@@ -165,18 +141,18 @@ namespace NeuralNetworkScratch
             {
                 if (i == 0)
                 {
-                    Z[i] = Matrix.Mul(X, W[i]);
-                    A[i] = Matrix.Func(Z[i], activationFunc[i]);
+                    Z[i] = X.Mul(W[i]);
+                    A[i] = Z[i].Func(activationFunc[i]);
                 }
                 else if (i == layers.Length - 1)
                 {
-                    Z[i] = Matrix.Mul(Matrix.AddFeatureBias(A[i - 1], 1), W[i]);
-                    A[i] = Matrix.Func(Z[i], (x) => x);
+                    Z[i] = A[i - 1].AddFeatureBias(1).Mul(W[i]);
+                    A[i] = Z[i].Func((x) => x);
                 }
                 else
                 {
-                    Z[i] = Matrix.Mul(Matrix.AddFeatureBias(A[i - 1], 1), W[i]);
-                    A[i] = Matrix.Func(Z[i], activationFunc[i]);
+                    Z[i] = A[i - 1].AddFeatureBias(1).Mul(W[i]);
+                    A[i] = Z[i].Func(activationFunc[i]);
                 }
             }
 
@@ -212,24 +188,24 @@ namespace NeuralNetworkScratch
             {
                 if (i == 1) // input layer 
                 {
-                    Sigma[0] = Matrix.Func(Matrix.Mul(Sigma[1], Matrix.Transpose(W[1])), Matrix.Func(Matrix.AddFeatureBias(Z[0], 1), activationFuncPrime[0]), (x, y) => x * y);
-                    Sigma[0] = Matrix.RemoveFeatureBias(Sigma[0]);
-                    Gradient[0] = Matrix.Mul(Matrix.Transpose(X), Sigma[0]);
+                    Sigma[0] = Sigma[1].Mul(W[1].Transpose()).Func(Z[0].AddFeatureBias(1).Func(activationFuncPrime[0]), (x, y) => x * y);
+                    Sigma[0] = Sigma[0].RemoveFeatureBias();
+                    Gradient[0] = X.Transpose().Mul(Sigma[0]);
                     //    Gradient[0] = Matrix.Func(Gradient[0], Matrix.Func(W[0], (x) => x * _regularizationRate), (x, y) => x - y);
 
                 }
                 else if (i == layers.Length - 1) // output layer
                 {
-                    var cost = Matrix.Func(Y, A[A.Length - 1], (x, y) => x - y);
-                    Sigma[Sigma.Length - 1] = Matrix.Func(cost, Z[Z.Length - 1], (x, y) => x * -activationFuncPrime[i - 1](y));
-                    Gradient[Gradient.Length - 1] = Matrix.Mul(Matrix.Transpose(Matrix.AddFeatureBias(A[A.Length - 2], 1)), Sigma[Sigma.Length - 1]);
+                    var cost = Y.Func(A[A.Length - 1], (x, y) => x - y);
+                    Sigma[Sigma.Length - 1] = cost.Func(Z[Z.Length - 1], (x, y) => x * -activationFuncPrime[i - 1](y));
+                    Gradient[Gradient.Length - 1] = A[A.Length - 2].AddFeatureBias(1).Transpose().Mul(Sigma[Sigma.Length - 1]);
                     //    Gradient[Gradient.Length - 1] = Matrix.Func(Gradient[Gradient.Length - 1], Matrix.Func(W[i - 1], (x) => x * _regularizationRate), (x, y) => x - y);
                 }
                 else  // hidden layer
                 {
-                    Sigma[i - 1] = Matrix.Func(Matrix.Mul(Sigma[i], Matrix.Transpose(W[i])), Matrix.Func(Matrix.AddFeatureBias(Z[i - 1], 1), activationFuncPrime[i - 1]), (x, y) => x * y);
-                    Gradient[i - 1] = Matrix.RemoveFeatureBias(Matrix.Mul(Matrix.Transpose(Matrix.AddFeatureBias(A[i - 2], 1)), Sigma[i - 1]));
-                    Sigma[i - 1] = Matrix.RemoveFeatureBias(Sigma[i - 1]);
+                    Sigma[i - 1] = Sigma[i].Mul(W[i].Transpose()).Func(Z[i - 1].AddFeatureBias(1).Func(activationFuncPrime[i - 1]), (x, y) => x * y);
+                    Gradient[i - 1] = A[i - 2].AddFeatureBias(1).Transpose().Mul(Sigma[i - 1]).RemoveFeatureBias();
+                    Sigma[i - 1] = Sigma[i - 1].RemoveFeatureBias();
                     //   Gradient[Gradient.Length - 1] = Matrix.Func(Gradient[Gradient.Length - 1], Matrix.Func(W[i - 1], (x) => x * _regularizationRate), (x, y) => x - y);
                 }
 
@@ -244,23 +220,23 @@ namespace NeuralNetworkScratch
         {
             Parallel.For(0, W.Length, i =>
             {
-                W[i] = Matrix.Func(W[i], Matrix.Func(Gradient[i], (x) => (_learningRate / (double)X.GetLength(0)) * x), (x, y) => x - y);
+                W[i] = W[i].Func(Gradient[i].Func((x) => (_learningRate / (double)X.GetLength(0)) * x), (x, y) => x - y);
             });
         }
 
         public string GetMAELoss()
         {
-            double[,] loss = Matrix.Func(CheckAnswer(Matrix.RemoveFeatureBias(X)), Y, (x, y) => Math.Abs(x - y));
+            double[,] loss = CheckAnswer(X.RemoveFeatureBias()).Func(Y, (x, y) => Math.Abs(x - y));
 
-            double result = Matrix.Sum(loss);///Matrix.Sum(Y);
+            double result = loss.Sum();///Matrix.Sum(Y);
             return Math.Round(result, 4).ToString();
         }
 
         public string GetRMSELoss(double[,] data, double[,] newY)
         {
-            double[,] loss = Matrix.Func(CheckAnswer(data), newY, (x, y) => Math.Pow(x - y, 2));
+            double[,] loss = CheckAnswer(data).Func(newY, (x, y) => Math.Pow(x - y, 2));
 
-            double result = Math.Sqrt(Matrix.Sum(loss) / loss.GetLength(0));///Matrix.Sum(Y);
+            double result = Math.Sqrt(loss.Sum() / loss.GetLength(0));///Matrix.Sum(Y);
             return Math.Round(result, 4).ToString();
         }
 
