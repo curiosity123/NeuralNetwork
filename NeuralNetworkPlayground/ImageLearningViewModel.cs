@@ -196,7 +196,7 @@ namespace NeuralNetworkPlayground
                     nn.BackwardPropagation(1);
                     Application.Current.Dispatcher.Invoke((Action)(() =>
                     {
-                        if (i % 10 == 0)
+                        if (i % 1 == 0)
                             DrawNetworkAnswer();
                         LossRMSE = "Epoch:" + i.ToString() + " RMSE:" + nn.GetRMSELoss(X, Y);
                         i++;
