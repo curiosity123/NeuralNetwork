@@ -12,6 +12,12 @@ namespace NeuralNetworkScratch.UnitTests
     {
 
 
+        public void MatrixSumTest()
+        {
+            double[,] m = new double[2, 2] { { 1, 2 }, { 4, 5 } };
+            double result = m.Sum();
+            Assert.AreNotEqual(12, result);
+        }
 
 
 
